@@ -1,0 +1,38 @@
+import { useState } from "react";
+import { BattingStats } from "../components/BattingStats";
+import { BowlingStats } from "../components/BowlingStats";
+import { Header } from "../components/Header";
+
+export const CareerStats = () => {
+  const [activeTab, setActiveTab] = useState("batting");
+
+  const handleActiveTabBtn = (val) => {
+    setActiveTab(val);
+  };
+  return (
+    <div className="flex flex-col items-center">
+      <Header data="Career Stats" />
+      <div className="mt-18 w-[97%] rounded flex justify-center gap-4">
+        <button
+          onClick={() => handleActiveTabBtn("batting")}
+          className={`btn btn-soft btn-primary font-black py-2 rounded-md px-3 hover: transition-all duration-300 ${
+            activeTab === "batting" && "scale-110 btn btn-active btn-primary"
+          }`}
+        >
+          Batting
+        </button>
+        <button
+          onClick={() => handleActiveTabBtn("bowling")}
+          className={`btn btn-soft btn-primary  font-black py-2 rounded-md px-3 hover: transition-all duration-300 ${
+            activeTab === "bowling" && "scale-110 btn btn-active btn-primary"
+          }`}
+        >
+          Bowling
+        </button>
+      </div>
+      <div className="mt-8 w-[97%] md:w-[80%] lg:w-[80%] flex flex-col items-center gap-2 rounded-lg bg-base-200 p-2">
+        {activeTab === "batting" ? <BattingStats /> : <BowlingStats />}
+      </div>
+    </div>
+  );
+};
