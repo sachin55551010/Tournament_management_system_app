@@ -1,1 +1,1 @@
-export const BATTING_STYLE = ["Right Handed Batsman", "Left Handed Batsman"];
+export const BATTING_STYLE = ["right handed bat", "left handed bat"];

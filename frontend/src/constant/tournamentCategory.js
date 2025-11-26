@@ -1,6 +1,6 @@
 export const TOURNAMENT_CATEGORY = [
-  "Open",
-  "Panchayat",
-  "Panchayat + Open",
-  "Corporate",
+  "open",
+  "panchayat",
+  "panchayat+open",
+  "corporate",
 ];

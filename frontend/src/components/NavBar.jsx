@@ -1,25 +1,37 @@
 import { X, Menu } from "lucide-react";
 import { useState } from "react";
-import { MenuPage } from "./MenuPage";
+import { SideMenuBar } from "./SideMenuBar";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsMenuOpen } from "../store/authSlice";
+import { NavLink } from "react-router-dom";
 export const NavBar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isMenuOpen } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   return (
-    <div className={`relative`}>
+    <div>
       <header
-        className={`fix z-[100] bg-base-200 h-[var(--nav-h)] flex items-center justify-between px-2 ${
-          isMenuOpen ? "" : ""
-        }`}
+        className={`fixed z-90 w-full h-[var(--nav-h)] flex items-center  px-2 justify-between bg-base-100 shadow-[0px_0px_10px_rgba(0,0,0,1)]`}
       >
-        <div className="flex gap-1 items-center">
+        <div className="flex gap-2 items-center">
           {!isMenuOpen && (
-            <Menu strokeWidth={4} onClick={() => setIsMenuOpen(true)} />
+            <Menu
+              strokeWidth={4}
+              onClick={() => dispatch(setIsMenuOpen(true))}
+              className={`ml-2 lg:hidden`}
+            />
           )}
-
-          <div>Logo</div>
+          <div className="flex gap-2 items-center">
+            <NavLink to="/" className="font-bold">
+              <img src="my_app_logo.png" alt="" className="h-8" />
+            </NavLink>
+            <h1 className="font-extrabold">Hills Cricket Arena</h1>
+          </div>
+        </div>
+        <div className="lg:flex">
+          <SideMenuBar />
         </div>
       </header>
-      {isMenuOpen && <MenuPage setIsMenuOpen={setIsMenuOpen} />}
     </div>
   );
 };

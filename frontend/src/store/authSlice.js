@@ -6,6 +6,7 @@ const authApi = createSlice({
     authUser: null,
     socket: null,
     picturePopup: false,
+    isMenuOpen: false,
   },
 
   reducers: {
@@ -18,8 +19,12 @@ const authApi = createSlice({
     setPicturePopup: (state, action) => {
       state.picturePopup = action.payload;
     },
+    setIsMenuOpen: (state, action) => {
+      state.isMenuOpen = action.payload;
+    },
   },
 });
 
-export const { setAuthUser, clearAuthUser, setPicturePopup } = authApi.actions;
+export const { setAuthUser, clearAuthUser, setPicturePopup, setIsMenuOpen } =
+  authApi.actions;
 export default authApi.reducer;

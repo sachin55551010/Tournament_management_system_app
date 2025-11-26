@@ -15,16 +15,3 @@ auth_router.get(
     sendCookies(req.user, res);
   }
 );
-
-auth_router.get(
-  "/facebook",
-  passport.authenticate("facebook", { scope: ["email", "public_profile"] })
-);
-
-auth_router.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", { session: false }),
-  (req, res) => {
-    sendCookies(req.user, res);
-  }
-);

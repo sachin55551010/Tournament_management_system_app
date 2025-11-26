@@ -1,7 +1,32 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
-import { addTournament } from "../controllers/tournament.controller.js";
+import {
+  addTournament,
+  deleteTournament,
+  getAllTournaments,
+  getMyTournaments,
+  getTournamentInfo,
+  updateTournamentInfo,
+} from "../controllers/tournament.controller.js";
 
 export const tournament_route = express.Router();
 
 tournament_route.post("/add-tournament", isAuthenticated, addTournament);
+
+tournament_route.get("/my-tournaments", isAuthenticated, getMyTournaments);
+
+tournament_route.get("/my-tournaments/:id", getTournamentInfo);
+
+tournament_route.patch(
+  "/update-tournament/:id",
+  isAuthenticated,
+  updateTournamentInfo
+);
+
+tournament_route.delete(
+  "/delete-tournament/:id",
+  isAuthenticated,
+  deleteTournament
+);
+
+tournament_route.get("/all-tournaments/:tournamentCategory", getAllTournaments);

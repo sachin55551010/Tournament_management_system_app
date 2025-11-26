@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { BattingStats } from "../components/BattingStats";
-import { BowlingStats } from "../components/BowlingStats";
-import { Header } from "../components/Header";
+import { BattingStats } from "../../components/BattingStats";
+import { BowlingStats } from "../../components/BowlingStats";
+import { Header } from "../../components/Header";
 
 export const CareerStats = () => {
   const [activeTab, setActiveTab] = useState("batting");

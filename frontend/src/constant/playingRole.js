@@ -1,10 +1,10 @@
 export const PLAYING_ROLE = [
-  "Top Order Batsman",
-  "Middle Order Batsman",
-  "Opening Batsman",
-  "Bowler",
-  "All Rounder",
-  "Wicket Keeper Batter",
-  "Lower Order Batsman",
-  "None",
+  "top order batsman",
+  "middle order batsman",
+  "opening batsman",
+  "bowler",
+  "all rounder",
+  "wicket keeper batter",
+  "lower order batsman",
+  "none",
 ];

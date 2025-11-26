@@ -9,6 +9,7 @@ const tournamentSchema = new mongoose.Schema(
     },
     organiserName: {
       type: String,
+      required: true,
     },
     phone: {
       type: String,
@@ -23,7 +24,7 @@ const tournamentSchema = new mongoose.Schema(
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Player",
       required: true,
     },
 
@@ -64,7 +65,7 @@ const tournamentSchema = new mongoose.Schema(
     },
     tournamentCategory: {
       type: String,
-      enum: ["Open", "Panchayat", "Panchayat + Open", "Corporate"],
+      enum: ["open", "panchayat", "panchayat+open", "corporate"],
       required: true,
     },
     pitchType: {
@@ -72,12 +73,11 @@ const tournamentSchema = new mongoose.Schema(
       enum: ["Regular", "Cement", "Matte"],
       required: true,
     },
-    teams: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-      },
-    ],
+
+    additionalInfo: {
+      type: String,
+      default: "",
+    },
   },
   { timestamps: true }
 );

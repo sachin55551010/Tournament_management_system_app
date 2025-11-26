@@ -33,6 +33,7 @@ const matchSchema = new mongoose.Schema({
   result: {
     winnerTeamId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
     },
     status: {
       type: String,

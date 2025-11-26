@@ -13,8 +13,6 @@ import { player_router } from "./routes/player.route.js";
 
 const PORT = process.env.PORT; // local host port
 
-//? middlewares
-
 //* implemented cors policy in app
 app.use(
   cors({
@@ -24,6 +22,7 @@ app.use(
   })
 );
 
+//? express middlewares
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
@@ -32,13 +31,23 @@ app.get("/", (_, res) => {
   res.send("Server working");
 });
 
-//* routes
+//? routes
+app.get("/", (req, res) => {
+  res.send("working");
+});
 app.use("/api/v1/user", user_route);
 app.use("/api/v1/auth", auth_router);
 app.use("/api/v1/tournament", tournament_route);
 app.use("/api/v1/team", team_route);
 app.use("/api/v1/player", player_router);
 connectMongoDB();
+
+//?implementing socket.io
+io.on("connect", (socket) => {
+  console.log(socket.id);
+
+  io.emit("message", "Helloooo");
+});
 server.listen(PORT, () => console.log(`Server running on port : ${PORT}`));
 
 app.use(errHandlerMiddleware); // error handler function

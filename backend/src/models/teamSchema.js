@@ -6,26 +6,28 @@ const teamSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      maxlength: 30,
     },
 
-    teamPlayers: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Player",
-      },
-      {
-        type: String,
-        role: [
-          "captain",
-          "vice_captain",
-          "wicket_keeper",
-          "batsman",
-          "bowler",
-          "all_rounder",
-        ],
-        default: "player",
-      },
-    ],
+    tournamentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tournament",
+      required: true,
+    },
+
+    city: {
+      type: String,
+      required: true,
+      maxlength: 20,
+    },
+    captainNumber: {
+      type: String,
+    },
+    captainName: {
+      type: String,
+      maxlength: 20,
+    },
+
     teamLogo: {
       type: String,
       default: "",
