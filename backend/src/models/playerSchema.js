@@ -83,12 +83,6 @@ const playerSchema = new mongoose.Schema(
       enum: ["user", "organiser", "superadmin"],
       default: "user",
     },
-    teamId: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Team",
-      },
-    ],
 
     careerStats: {
       matches: {

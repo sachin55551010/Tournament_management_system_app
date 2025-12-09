@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import toast from "react-hot-toast";
-
+import { toast } from "react-toastify";
 export const tournamentApi = createApi({
   reducerPath: "tournament_api",
   baseQuery: fetchBaseQuery({
@@ -48,8 +47,8 @@ export const tournamentApi = createApi({
     }),
 
     getTournamentInfo: builder.query({
-      query: (id) => ({
-        url: `/my-tournaments/${id}`,
+      query: (tournamentId) => ({
+        url: `/my-tournaments/${tournamentId}`,
         method: "GET",
       }),
       providesTags: ["Tournament"],
@@ -83,7 +82,6 @@ export const tournamentApi = createApi({
       onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-
           toast.success(data.message);
         } catch (error) {
           toast.error(error.error.data.message);

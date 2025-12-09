@@ -1,5 +1,4 @@
 import { X, Menu } from "lucide-react";
-import { useState } from "react";
 import { SideMenuBar } from "./SideMenuBar";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsMenuOpen } from "../store/authSlice";
@@ -11,7 +10,7 @@ export const NavBar = () => {
   return (
     <div>
       <header
-        className={`fixed z-90 w-full h-[var(--nav-h)] flex items-center  px-2 justify-between bg-base-100 shadow-[0px_0px_10px_rgba(0,0,0,1)]`}
+        className={`fixed z-90 w-full h-[var(--nav-h)] flex items-center  px-2 justify-between bg-base-100 shadow-[0px_0px_10px_rgba(0,0,0,.4)]`}
       >
         <div className="flex gap-2 items-center">
           {!isMenuOpen && (
@@ -23,7 +22,7 @@ export const NavBar = () => {
           )}
           <div className="flex gap-2 items-center">
             <NavLink to="/" className="font-bold">
-              <img src="my_app_logo.png" alt="" className="h-8" />
+              <img src="/my_app_logo.png" alt="" className="h-8" />
             </NavLink>
             <h1 className="font-extrabold">Hills Cricket Arena</h1>
           </div>

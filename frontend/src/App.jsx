@@ -4,7 +4,7 @@ import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/User/LoginPage";
 import { useSelector } from "react-redux";
 import { useCheckAuthUserQuery } from "./store/authApi";
-import { MyProfile } from "./pages/User/MyProfile";
+import { ProfilePage } from "./pages/User/ProfilePage";
 import { ToastContainer, toast } from "react-toastify";
 import { CareerStats } from "./pages/User/CareerStats";
 import { EditProfile } from "./pages/User/EditProfile";
@@ -29,8 +29,9 @@ import { UserDashBoard } from "./dashboard/UserDashBoard";
 import { OrganiserDashBoard } from "./dashboard/OrganiserDashBoard";
 import { createSocket } from "./utils/socket";
 import { NotFound } from "./pages/NotFound";
-import { useEffect } from "react";
 import { CreateTeam } from "./pages/Team/CreateTeam";
+import { AddTeamPlayer } from "./pages/Team/AddTeamPlayer";
+import { JoinTeamPage } from "./pages/Team/JoinTeamPage";
 function App() {
   const { authUser } = useSelector((state) => state.auth);
   const { isLoading } = useCheckAuthUserQuery();
@@ -51,7 +52,7 @@ function App() {
   }
 
   return (
-    <div data-theme={myTheme} className={`min-h-dvh max-h-dvh`}>
+    <div data-theme={myTheme} className={`min-h-dvh`}>
       <div className={`${chooseTheme && "blur-sm overflow-hidden"}`}>
         <NavBar />
 
@@ -96,8 +97,8 @@ function App() {
           />
 
           {/*
-          organser dashboard
-          containes all info matches and related related with organiser
+          organiser dashboard
+          containes info matches and  teams routes
           */}
           <Route
             path="/my-tournament"
@@ -122,15 +123,12 @@ function App() {
           </Route>
 
           {/* my profile page  */}
-          <Route
-            path="/my-profile"
-            element={authUser ? <MyProfile /> : <Navigate to="/login" />}
-          />
+          <Route path="/profile/:playerId" element={<ProfilePage />} />
 
           {/* player career stats page  */}
           <Route
-            path="/my-profile/career-stats"
-            element={authUser ? <CareerStats /> : <Navigate to="/login" />}
+            path="/profile/career-stats/:playerId"
+            element={<CareerStats />}
           />
 
           {/*
@@ -138,8 +136,8 @@ function App() {
            to edit name, age, gender, profile photo etc
             */}
           <Route
-            path="/my-profile/edit-profile"
-            element={authUser ? <EditProfile /> : <Navigate to="/login" />}
+            path="/profile/edit-profile/:playerId"
+            element={authUser && <EditProfile />}
           />
 
           {/*
@@ -156,7 +154,7 @@ function App() {
             }
           />
           <Route
-            path="/update-tournament/:id"
+            path="/update-tournament/:tournamentId"
             element={
               authUser ? (
                 <CreateTournamentPage mode="edit" />
@@ -173,14 +171,18 @@ function App() {
            * contain teams info page
            */}
           <Route
-            path="/my-tournament/tournaments/:id"
+            path="/my-tournament/tournaments/:tournamentId"
             element={<TournamentInfo />}
           >
             <Route
               path="tournament-teams/create-team"
-              element={<CreateTeam />}
+              element={authUser && <CreateTeam />}
             />
             <Route path="tournament-teams" element={<MyTournamentTeams />} />
+            <Route
+              path="tournament-teams/add-players/:teamId"
+              element={<AddTeamPlayer />}
+            />
             <Route index element={<Navigate to="tournament-info" replace />} />
 
             <Route path="tournament-info" element={<MyTournamentInfo />} />
@@ -192,6 +194,8 @@ function App() {
 
           <Route path="/all-tournaments" element={<AllTournaments />} />
 
+          {/* team join route */}
+          <Route path="/join-team/:token" element={<JoinTeamPage />} />
           {/* for invalid routes */}
           <Route path="*" element={<NotFound />} />
         </Routes>

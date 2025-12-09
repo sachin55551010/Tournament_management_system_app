@@ -5,7 +5,6 @@ const tournamentSchema = new mongoose.Schema(
     tournamentName: {
       type: String,
       required: true,
-      unique: true,
     },
     organiserName: {
       type: String,

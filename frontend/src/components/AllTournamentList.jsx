@@ -7,6 +7,7 @@ import {
   useGetAllTournamentsQuery,
 } from "../store/tournamentApi";
 import { useLocation, useNavigate } from "react-router-dom";
+import { DummyCardLoadingSkelton } from "./ui/DummyLoadingSkelton";
 
 export const AllTournamentList = () => {
   const dispatch = useDispatch();
@@ -73,18 +74,11 @@ export const AllTournamentList = () => {
 
   // get tournament info button
   const handleGetTournamentInfoBtn = (tournamentId) => {
-    console.log(tournamentId);
     navigate(`/my-tournament/tournaments/${tournamentId}`);
   };
   const options = { day: "2-digit", month: "short", year: "numeric" };
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-10 w-full md:grid-cols-2 lg:grid-cols-3 p-4">
-        <div className="skeleton h-42 w-full"></div>
-        <div className="skeleton h-42 w-full"></div>
-        <div className="skeleton h-42 w-full"></div>
-      </div>
-    );
+    return <DummyCardLoadingSkelton />;
   }
   return (
     <>
@@ -107,7 +101,7 @@ export const AllTournamentList = () => {
             <li
               onClick={() => handleGetTournamentInfoBtn(tournament._id)}
               key={tournament._id}
-              className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer shadow-[0px_0px_10px_rgba(0,0,0,.5)] hover:scale-105  transition-all duration-200"
+              className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer shadow-[0px_0px_10px_rgba(0,0,0,.4)] hover:scale-105  transition-all duration-200"
             >
               {/* header */}
               <div className="h-[70%] p-2 flex flex-col justify-around">

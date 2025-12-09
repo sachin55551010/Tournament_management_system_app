@@ -1,25 +1,27 @@
 import { CalendarDays, Mars, Pen, Phone, UserRoundPen } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { useLogoutMutation } from "../../store/authApi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useLogoutMutation, useProfileQuery } from "../../store/authApi";
 import { Header } from "../../components/Header";
 import { setPicturePopup } from "../../store/authSlice";
 import { defaultAvatar } from "../../utils/noprofilePicHelper";
 import allRounder from "../../../assets/all_rounder.svg";
 import { PreviewProfilePicture } from "../../components/PreviewProfilePicture";
-export const MyProfile = () => {
+export const ProfilePage = () => {
   const { authUser, picturePopup } = useSelector((state) => state.auth);
 
   const [logout] = useLogoutMutation();
+  const { playerId } = useParams();
+  const { data, isLoading } = useProfileQuery(playerId);
 
-  const { profilePicture } = authUser?.player;
-  const { playerName } = authUser?.player;
-  const { gender } = authUser?.player;
-  const { number } = authUser?.player;
-  const { battingStyle } = authUser?.player;
-  const { bowlingStyle } = authUser?.player;
-  const { playingRole } = authUser?.player;
-  const { dateOfBirth } = authUser?.player;
+  const profilePicture = data?.playerProfile?.profilePicture;
+  const playerName = data?.playerProfile?.playerName;
+  const gender = data?.playerProfile?.gender;
+  const number = data?.playerProfile?.number;
+  const battingStyle = data?.playerProfile?.battingStyle;
+  const bowlingStyle = data?.playerProfile?.bowlingStyle;
+  const playingRole = data?.playerProfile?.playingRole;
+  const dateOfBirth = data?.playerProfile?.dateOfBirth;
 
   const navigate = useNavigate();
   const handleLogoutBtn = () => {
@@ -74,6 +76,13 @@ export const MyProfile = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="h-dvh w-dvw flex items-center justify-center">
+        <span className="loading loading-ring w-20 h-20"></span>
+      </div>
+    );
+  }
   return (
     <div className={`h-dvh flex flex-col overflow-hidden`}>
       <Header data="My Profile" />
@@ -117,15 +126,17 @@ export const MyProfile = () => {
                 </h4>
               </div>
 
-              <Link
-                to="edit-profile"
-                className="md:absolute top-[34%] right-[5%]"
-              >
-                <button className="btn btn-info flex justify-center items-center">
-                  <Pen size={20} />
-                  <span className="font-bold">Edit Profile</span>
-                </button>
-              </Link>
+              {authUser?.player?._id === data?.playerProfile?._id && (
+                <Link
+                  to={`/profile/edit-profile/${playerId}`}
+                  className="md:absolute top-[34%] right-[5%]"
+                >
+                  <button className="btn btn-info flex justify-center items-center">
+                    <Pen size={20} />
+                    <span className="font-bold">Edit Profile</span>
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </section>
@@ -143,8 +154,10 @@ export const MyProfile = () => {
                     {player.icon}
                   </div>
                   <div>
-                    <h1>{player.label}</h1>
-                    <h1 className="capitalize">{player.value || "_"}</h1>
+                    <h1 className="font-bold text-sm">{player.label}</h1>
+                    <h1 className="capitalize text-sm">
+                      {player.value || "_"}
+                    </h1>
                   </div>
                 </li>
               );
@@ -152,12 +165,21 @@ export const MyProfile = () => {
           </ul>
 
           <div className="flex gap-4">
-            <Link to="career-stats" className="btn btn-info flex-1">
+            <Link
+              to={`/profile/career-stats/${playerId}`}
+              className="btn btn-info flex-1"
+            >
               Career Stats
             </Link>
-            <button onClick={handleLogoutBtn} className="btn btn-error flex-1">
-              Log Out
-            </button>
+
+            {authUser?.player?._id === data?.playerProfile?._id && (
+              <button
+                onClick={handleLogoutBtn}
+                className="btn btn-error flex-1"
+              >
+                Log Out
+              </button>
+            )}
           </div>
         </section>
       </div>

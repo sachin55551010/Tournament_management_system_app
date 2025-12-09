@@ -6,9 +6,9 @@ import { PLAYING_ROLE } from "../../constant/playingRole";
 import { BATTING_STYLE } from "../../constant/battingStyle";
 import { BOWLING_STYLE } from "../../constant/bowlingStyle";
 import { setPicturePopup } from "../../store/authSlice";
-import { useUpdateUserMutation } from "../../store/authApi";
+import { useProfileQuery, useUpdateUserMutation } from "../../store/authApi";
 import { GENDER } from "../../constant/gender";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { defaultAvatar } from "../../utils/noprofilePicHelper";
 import { PreviewProfilePicture } from "../../components/PreviewProfilePicture";
@@ -16,6 +16,7 @@ import { PreviewProfilePicture } from "../../components/PreviewProfilePicture";
 export const EditProfile = () => {
   const { authUser, picturePopup } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { playerId } = useParams();
 
   const navigate = useNavigate();
 
@@ -28,9 +29,11 @@ export const EditProfile = () => {
       bowlingStyle: authUser?.player?.bowlingStyle || "",
       playingRole: authUser?.player?.playingRole || "",
       dateOfBirth: authUser?.player?.dateOfBirth || "",
+      playerId,
     });
   }, []);
 
+  // const profilePicture = data?.playerProfile?.profilePicture
   const [errorMessage, setErrorMessage] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [playerInfo, setPlayerInfo] = useState({
@@ -42,6 +45,7 @@ export const EditProfile = () => {
     bowlingStyle: "",
     playingRole: "",
     dateOfBirth: "",
+    playerId,
   });
 
   const [updateUser, { isLoading, isError }] = useUpdateUserMutation();
@@ -72,7 +76,7 @@ export const EditProfile = () => {
     try {
       e.preventDefault();
 
-      if (playerInfo.number !== "" && playerInfo.number.length < 10) {
+      if (playerInfo.number === "" && playerInfo.number.length < 10) {
         toast.error("Please enter 10 digit number", {
           position: "top-center",
           autoClose: 1500,
@@ -81,7 +85,7 @@ export const EditProfile = () => {
         return;
       }
       await updateUser(playerInfo).unwrap();
-      navigate("/my-profile");
+      navigate(`/profile/${playerId}`);
     } catch (error) {
       console.error(error);
     }
@@ -223,7 +227,7 @@ export const EditProfile = () => {
                   }
                   name="playingRole"
                   id="roles"
-                  className="w-full border h-10 rounded-lg"
+                  className="w-full border h-10 rounded-lg capitalize"
                 >
                   {PLAYING_ROLE.map((val, index) => {
                     return (
@@ -254,7 +258,7 @@ export const EditProfile = () => {
                   }
                   name="battingStyle"
                   id="batting-style"
-                  className="w-full border h-10 rounded-lg"
+                  className="w-full border h-10 rounded-lg capitalize"
                 >
                   {BATTING_STYLE.map((val, index) => {
                     return (
@@ -284,7 +288,7 @@ export const EditProfile = () => {
                   }
                   name="bowlingStyle"
                   id="bowling-style"
-                  className="w-full border h-10 rounded-lg"
+                  className="w-full border h-10 rounded-lg capitalize"
                 >
                   {BOWLING_STYLE.map((val, index) => {
                     return (
@@ -302,7 +306,10 @@ export const EditProfile = () => {
               <div className="flex justify-around w-full">
                 {GENDER.map((val, index) => {
                   return (
-                    <div key={index} className="flex gap-1 items-center">
+                    <div
+                      key={index}
+                      className="flex gap-1 items-center capitalize"
+                    >
                       <input
                         className="radio radio-xs"
                         value={val}

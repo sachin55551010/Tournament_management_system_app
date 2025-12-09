@@ -1,5 +1,3 @@
-import batsman from "../../../assets/batsman.svg";
-
 export const LoginPage = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -12,16 +10,16 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[999] min-h-[100dvh-var(--nav-h)] w-full flex flex-col items-center p-2 bg-[url(cricket_bg_mobile.jpg)] bg-cover bg-center bg-no-repeat md:bg-[url(cricket_bg_desktop.jpg)]">
+    <div className="fixed inset-0 z-[999] min-h-[100dvh-var(--nav-h)] w-full flex flex-col items-center p-2 bg-[url(cricket_bg_mobile.jpg)] bg-cover bg-center bg-no-repeat md:bg-[url(/cricket_bg_desktop.jpg)]">
       <form
         onSubmit={handleFormSubmit}
-        className=" flex mt-2 w-full flex-col md:w-[80%] md:mt-2 bg-base-300/80 rounded-xl backdrop-blur-sm"
+        className=" flex mt-2 w-full flex-col md:w-[80%] lg:w-[60%] md:mt-2 bg-base-300/40 rounded-xl backdrop-blur-sm border border-base-content/40"
       >
         {/* heading  */}
         <div className="flex flex-col mt-2 gap-4 md:gap-4 p-4 items-center md:mt-2">
           <div className="flex gap-2 items-center">
             <div>
-              <img src="my_app_logo.png" alt="" className="h-15" />
+              <img src="/my_app_logo.png" alt="" className="h-15" />
             </div>
             <h1 className="font-black text-xl font-stretch-expanded">
               Hills Cricket Arena
@@ -39,7 +37,7 @@ export const LoginPage = () => {
         </div>
 
         <div className="flex flex-col items-center pb-8">
-          <img src={batsman} alt="" className="h-50 w-60" />
+          <img src="/login_logo.svg" alt="" className="h-50 w-60" />
           <div className="flex items-center justify-between px-2 mt-2"></div>
           <h2 className="font-bold text-sm text-center">
             Please Login to continue

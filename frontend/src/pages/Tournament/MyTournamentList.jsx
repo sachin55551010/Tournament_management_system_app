@@ -1,4 +1,4 @@
-import { AllTournamentList } from "../../components/AllTournamentList";
+import { DummyCardLoadingSkelton } from "../../components/ui/DummyLoadingSkelton";
 import { useGetMyTournamentQuery } from "../../store/tournamentApi";
 import { useNavigate } from "react-router-dom";
 
@@ -6,20 +6,16 @@ export const MyTournamentList = () => {
   const { data, isLoading } = useGetMyTournamentQuery();
   const navigate = useNavigate();
 
-  //
-  const handleOnClickBtn = (id) => {
-    navigate(`/my-tournament/tournaments/${id}`);
+  // function to get tournament information related with tournament id
+  const handleOnClickBtn = (tournamentId) => {
+    navigate(`/my-tournament/tournaments/${tournamentId}`);
   };
   //format date
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return (
     <div className="px-4 pt-28 pb-8 max-h-dvh overflow-y-scroll">
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-10 w-full md:grid-cols-2 lg:grid-cols-3">
-          <div className="skeleton h-42 w-full"></div>
-          <div className="skeleton h-42 w-full"></div>
-          <div className="skeleton h-42 w-full"></div>
-        </div>
+        <DummyCardLoadingSkelton />
       ) : (
         <div>
           {data?.myTournaments?.length === 0 ? (

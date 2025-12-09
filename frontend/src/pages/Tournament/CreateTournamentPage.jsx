@@ -12,11 +12,12 @@ import {
 } from "../../store/tournamentApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { DeleteConfirmModal } from "../../components/ui/DeleteConfirmModal";
+import { validateInputs } from "../../utils/validateInputs";
 
 export const CreateTournamentPage = ({ mode }) => {
-  const { id } = useParams();
-  const { data } = useGetTournamentInfoQuery(id, {
-    skip: !id,
+  const { tournamentId } = useParams();
+  const { data } = useGetTournamentInfoQuery(tournamentId, {
+    skip: !tournamentId,
   });
 
   //get all the fields from server
@@ -71,19 +72,6 @@ export const CreateTournamentPage = ({ mode }) => {
     setTournamentInfo((prev) => ({ ...prev, [type]: val }));
   };
 
-  // function to prevent adding number or any special character
-  const validateInputs = (value) => {
-    const regex = /^[A-Za-z\s]*$/;
-    if (regex.test(value)) {
-      return true;
-    } else {
-      toast.error("Digits and Special Characters not allowed", {
-        duration: 1500,
-      });
-      return false;
-    }
-  };
-
   const todayDate = new Date().toISOString().split("T")[0];
 
   // check if user entering ending date before starting date
@@ -117,9 +105,12 @@ export const CreateTournamentPage = ({ mode }) => {
           pitchType: data?.myTournament?.pitchType,
         });
 
-        await updateTournament({ id, updatedFields: tournamentInfo });
+        await updateTournament({
+          tournamentId,
+          updatedFields: tournamentInfo,
+        }).unwrap();
 
-        navigate(`/my-tournament/tournaments/${id}/tournament-info`);
+        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-info`);
       } else {
         if (
           !tournamentInfo.tournamentName.trim() ||
@@ -137,13 +128,12 @@ export const CreateTournamentPage = ({ mode }) => {
 
           return;
         } else {
-          await addTournament(tournamentInfo);
+          await addTournament(tournamentInfo).unwrap();
           navigate("/my-tournament/tournaments");
         }
       }
     } catch (error) {
       console.log("Form submit error", error);
-      toast.error("Something went wrong");
     }
   };
 
@@ -436,7 +426,7 @@ export const CreateTournamentPage = ({ mode }) => {
       {isDeleteModal && (
         <DeleteConfirmModal
           setIsDeleteModal={setIsDeleteModal}
-          id={id}
+          tournamentId={tournamentId}
           navigate={navigate}
         />
       )}

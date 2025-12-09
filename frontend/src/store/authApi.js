@@ -12,7 +12,7 @@ export const authApi = createApi({
     //* function to check user login or not
     checkAuthUser: builder.query({
       query: () => ({
-        url: "/me",
+        url: `/me`,
       }),
       providesTags: ["Auth"],
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
@@ -33,13 +33,15 @@ export const authApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         const { data } = await queryFulfilled;
         dispatch(clearAuthUser());
-        toast.success(data.message);
+        toast.success(data.message, {
+          autoClose: 1000,
+        });
       },
     }),
 
     updateUser: builder.mutation({
       query: (userData) => ({
-        url: "/update-user",
+        url: "/update-player",
         method: "PATCH",
         body: userData,
       }),
@@ -80,6 +82,14 @@ export const authApi = createApi({
         }
       },
     }),
+
+    profile: builder.query({
+      query: (playerId) => ({
+        url: `/profile/${playerId}`,
+        method: "GET",
+      }),
+      providesTags: ["Auth"],
+    }),
   }),
 });
 
@@ -88,4 +98,5 @@ export const {
   useLogoutMutation,
   useUpdateUserMutation,
   useRemoveProfilePictureMutation,
+  useProfileQuery,
 } = authApi;

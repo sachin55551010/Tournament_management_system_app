@@ -100,9 +100,9 @@ export const getMyTournaments = async (req, res, next) => {
 //function to get tournament using tournament id
 export const getTournamentInfo = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    if (!id) return next(new CustomErrHandler(400, "id not found"));
-    const myTournament = await Tournament.findById(id).populate(
+    const { tournamentId } = req.params;
+    if (!tournamentId) return next(new CustomErrHandler(400, "id not found"));
+    const myTournament = await Tournament.findById(tournamentId).populate(
       "createdBy",
       "playerName profilePicture number"
     );
@@ -123,15 +123,16 @@ export const getTournamentInfo = async (req, res, next) => {
 
 export const updateTournamentInfo = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { tournamentId } = req.params;
     const updatedFields = req.body;
-    if (!id) return next(new CustomErrHandler(404, "No tournament found!"));
+    if (!tournamentId)
+      return next(new CustomErrHandler(404, "No tournament found!"));
     if (!updatedFields)
       return next(
         new CustomErrHandler(404, "Please fill all the required fields!")
       );
     const updatedTournament = await Tournament.findByIdAndUpdate(
-      id,
+      tournamentId,
       updatedFields,
       { new: true }
     );
@@ -150,10 +151,10 @@ export const updateTournamentInfo = async (req, res, next) => {
 
 export const deleteTournament = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const { tournamentId } = req.params;
 
     const deletedTournament = await Tournament.findOneAndDelete({
-      _id: id,
+      _id: tournamentId,
       status: { $in: ["Upcoming", "Cancelled"] },
     });
 
@@ -165,7 +166,7 @@ export const deleteTournament = async (req, res, next) => {
         )
       );
 
-    io.emit("deleteTournament", id);
+    io.emit("deleteTournament", tournamentId);
 
     return res.status(201).json({
       deletedTournament,

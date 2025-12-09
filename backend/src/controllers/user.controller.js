@@ -1,9 +1,10 @@
+import mongoose from "mongoose";
 import { Player } from "../models/playerSchema.js";
 import { Tournament } from "../models/tournamentSchema.js";
 import cloudinary from "../utils/cloudinary.js";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 
-export const myProfile = async (req, res, next) => {
+export const checkAuth = async (req, res, next) => {
   try {
     const { id } = req.user;
 
@@ -53,7 +54,11 @@ export const updatePlayer = async (req, res, next) => {
       playingRole,
       battingStyle,
       bowlingStyle,
+      playerId,
     } = req.body;
+
+    if (playerId !== req.user.id)
+      return next(new CustomErrHandler(403, "unatherised or invalid request"));
     let player = await Player.findById(req.user.id);
 
     if (
@@ -80,7 +85,7 @@ export const updatePlayer = async (req, res, next) => {
     player = await Player.findByIdAndUpdate(
       player._id,
       {
-        profilePicture: profilePicture || "",
+        profilePicture: profilePicture,
         playerName: playerName || "",
         gender: gender || "",
         number: number || "",
@@ -114,6 +119,24 @@ export const removeProfilePic = async (req, res, next) => {
       message: "profile picture removed",
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const profile = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || !mongoose.Types.ObjectId.isValid(id))
+      // mongoose.Types.ObjectId.isValid(id) is used to prevent error if frontend sending nothing in id and "undefined" id truthy value
+      return next(new CustomErrHandler(403, "Unautherized request"));
+    const playerProfile = await Player.findById(id);
+
+    if (!playerProfile)
+      return next(new CustomErrHandler(403, "No profile found"));
+    return res.status(200).json({ playerProfile, success: true });
+  } catch (error) {
+    console.log("Profile error : ", error);
     next(error);
   }
 };

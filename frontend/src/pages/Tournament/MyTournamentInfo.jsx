@@ -6,8 +6,8 @@ import { defaultAvatar } from "../../utils/noprofilePicHelper";
 
 export const MyTournamentInfo = () => {
   const { authUser } = useSelector((state) => state.auth);
-  const { id } = useParams();
-  const { data, isLoading } = useGetTournamentInfoQuery(id);
+  const { tournamentId } = useParams();
+  const { data, isLoading } = useGetTournamentInfoQuery(tournamentId);
 
   //format Date
   const options = { day: "2-digit", month: "short", year: "numeric" };
@@ -64,7 +64,10 @@ export const MyTournamentInfo = () => {
 
               {/* tournament edit button  */}
               {authUser?.player?._id === data?.myTournament?.createdBy?._id && (
-                <NavLink to={`/update-tournament/${id}`} className="pr-3">
+                <NavLink
+                  to={`/update-tournament/${tournamentId}`}
+                  className="pr-3"
+                >
                   <UserRoundPen
                     size={26}
                     className="hover:scale-115 transition-all duration-200"

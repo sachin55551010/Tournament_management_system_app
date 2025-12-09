@@ -1,12 +1,16 @@
 import { TriangleAlert } from "lucide-react";
 import { useDeleteTournamentMutation } from "../../store/tournamentApi";
 
-export const DeleteConfirmModal = ({ setIsDeleteModal, id, navigate }) => {
+export const DeleteConfirmModal = ({
+  setIsDeleteModal,
+  tournamentId,
+  navigate,
+}) => {
   const [deleteTournament, { isLoading: isDeleting }] =
     useDeleteTournamentMutation();
 
   const handleDleteBtn = async () => {
-    await deleteTournament(id);
+    await deleteTournament(tournamentId).unwrap();
     setIsDeleteModal(false);
     navigate("/my-tournament/tournaments");
   };

@@ -10,6 +10,7 @@ import { auth_router } from "./routes/auth.route.js";
 import { tournament_route } from "./routes/tournament.route.js";
 import { team_route } from "./routes/team.route.js";
 import { player_router } from "./routes/player.route.js";
+import { inviteLink_route } from "./routes/inviteLink.route.js";
 
 const PORT = process.env.PORT; // local host port
 
@@ -40,12 +41,11 @@ app.use("/api/v1/auth", auth_router);
 app.use("/api/v1/tournament", tournament_route);
 app.use("/api/v1/team", team_route);
 app.use("/api/v1/player", player_router);
+app.use("/api/v1/invite", inviteLink_route);
 connectMongoDB();
 
 //?implementing socket.io
-io.on("connect", (socket) => {
-  console.log(socket.id);
-
+io.on("connect", () => {
   io.emit("message", "Helloooo");
 });
 server.listen(PORT, () => console.log(`Server running on port : ${PORT}`));

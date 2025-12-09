@@ -5,7 +5,6 @@ const teamSchema = new mongoose.Schema(
     teamName: {
       type: String,
       required: true,
-      unique: true,
       maxlength: 30,
     },
 
@@ -15,6 +14,12 @@ const teamSchema = new mongoose.Schema(
       required: true,
     },
 
+    teamPlayers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Player",
+      },
+    ],
     city: {
       type: String,
       required: true,
@@ -31,6 +36,11 @@ const teamSchema = new mongoose.Schema(
     teamLogo: {
       type: String,
       default: "",
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Player",
+      required: true,
     },
   },
   { timestamps: true }

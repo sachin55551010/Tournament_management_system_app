@@ -1,11 +1,10 @@
-import React from "react";
 import { useParams, NavLink, Outlet } from "react-router-dom";
 import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
 import { Header } from "../../components/Header";
 
 export const TournamentInfo = () => {
-  const { id } = useParams();
-  const { data, isLoading, isError } = useGetTournamentInfoQuery(id);
+  const { tournamentId } = useParams();
+  const { data, isLoading, isError } = useGetTournamentInfoQuery(tournamentId);
 
   if (isLoading) {
     return <h1>Loading...</h1>;

@@ -1,9 +1,13 @@
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useProfileQuery } from "../store/authApi";
 
-export const BattingStats = () => {
-  const { authUser } = useSelector((state) => state.auth);
+export const BattingStats = ({ data, isLoading }) => {
+  if (isLoading) {
+    return <div className="skeleton h-60 w-full"></div>;
+  }
 
-  const battingStats = authUser?.player?.careerStats?.batting;
+  const battingStats = data?.playerProfile?.careerStats?.batting;
 
   const battingStatArray = Object.entries(battingStats).map(([key, value]) => {
     return { label: key.charAt(0).toUpperCase() + key.slice(1), value };
@@ -16,7 +20,7 @@ export const BattingStats = () => {
         <div className="flex flex-col items-center justify-center p-2 rounded bg-base-100">
           <h1 className="font-extrabold">Matches</h1>
           <span className="font-bold">
-            {authUser?.player?.careerStats?.matches}
+            {data?.playerProfile?.careerStats?.matches}
           </span>
         </div>
         {battingStatArray.map((data) => {

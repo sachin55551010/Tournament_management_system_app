@@ -1,9 +1,10 @@
 import { Palette, Target, Trophy, UserRound, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { setChooseTheme } from "../store/themeSlice";
 import { setIsMenuOpen } from "../store/authSlice";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
+import { useProfileQuery } from "../store/authApi";
 export const SideMenuBar = () => {
   const { authUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -12,6 +13,9 @@ export const SideMenuBar = () => {
     e.stopPropagation();
     dispatch(setChooseTheme(true));
   };
+
+  const playerId = authUser?.player?._id;
+  const { data } = useProfileQuery(playerId);
 
   const closeBtn = () => {
     dispatch(setIsMenuOpen(false));
@@ -59,7 +63,7 @@ export const SideMenuBar = () => {
               </NavLink>
             ) : (
               <NavLink
-                to="/my-profile"
+                to={`/profile/${playerId}`}
                 className="flex items-center gap-4 lg:h-5 lg:gap-2"
               >
                 {authUser?.player?.profilePicture === "" ? (

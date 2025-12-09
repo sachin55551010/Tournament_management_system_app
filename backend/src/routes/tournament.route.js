@@ -15,16 +15,16 @@ tournament_route.post("/add-tournament", isAuthenticated, addTournament);
 
 tournament_route.get("/my-tournaments", isAuthenticated, getMyTournaments);
 
-tournament_route.get("/my-tournaments/:id", getTournamentInfo);
+tournament_route.get("/my-tournaments/:tournamentId", getTournamentInfo);
 
 tournament_route.patch(
-  "/update-tournament/:id",
+  "/update-tournament/:tournamentId",
   isAuthenticated,
   updateTournamentInfo
 );
 
 tournament_route.delete(
-  "/delete-tournament/:id",
+  "/delete-tournament/:tournamentId",
   isAuthenticated,
   deleteTournament
 );
