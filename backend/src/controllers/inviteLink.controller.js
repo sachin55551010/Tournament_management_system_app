@@ -36,6 +36,8 @@ export const createInviteLink = async (req, res, next) => {
   }
 };
 
+// function to validate link
+// check token validation and expire link 
 export const validateInviteLink = async (req, res, next) => {
   try {
     const { token } = req.params;
