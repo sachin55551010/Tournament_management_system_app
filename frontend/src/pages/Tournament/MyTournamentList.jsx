@@ -29,7 +29,7 @@ export const MyTournamentList = () => {
                   <div
                     onClick={() => handleOnClickBtn(tournament._id)}
                     key={tournament._id}
-                    className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer shadow-[0px_0px_10px_rgba(0,0,0,.8)] hover:scale-105 transition-all duration-200"
+                    className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer border border-base-content/20 hover:scale-102 transition-all duration-200"
                   >
                     {/* header */}
                     <div className="h-[75%]">

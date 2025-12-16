@@ -45,9 +45,11 @@ export const GenerateInviteLinkModal = ({
           )}
         </div>
 
-        <h1 className="text-error bg-error/5 px-2 py-1 rounded-lg text-[.8rem] italic font-bold">
-          This link will expire in 5 days
-        </h1>
+        {!inviteLinkLoading && (
+          <h1 className="text-error bg-error/5 px-2 py-1 rounded-lg text-[.8rem] italic font-bold">
+            This link will expire in 7 days
+          </h1>
+        )}
 
         <div className="w-full flex justify-end">
           <button onClick={handleCloseBtn} className="btn btn-accent">

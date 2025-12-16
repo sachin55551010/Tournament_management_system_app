@@ -24,7 +24,10 @@ export const teamApi = createApi({
           console.log(data);
         } catch (error) {
           console.log("create team error : ", error);
-          toast.error(error.error.data.message);
+          toast.error(error.error.data.message, {
+            autoClose: 1500,
+            theme: "colored",
+          });
         }
       },
     }),

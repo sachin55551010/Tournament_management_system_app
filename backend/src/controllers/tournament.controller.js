@@ -3,6 +3,7 @@ import { Player } from "../models/playerSchema.js";
 import { Tournament } from "../models/tournamentSchema.js";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 import { io } from "../utils/socket.js";
+import mongoose from "mongoose";
 
 //function to create new tournament
 export const addTournament = async (req, res, next) => {
@@ -20,6 +21,7 @@ export const addTournament = async (req, res, next) => {
       additionalInfo,
       pitchType,
     } = req.body;
+
     if (
       !tournamentName?.trim() ||
       !phone?.trim() ||
@@ -101,7 +103,8 @@ export const getMyTournaments = async (req, res, next) => {
 export const getTournamentInfo = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
-    if (!tournamentId) return next(new CustomErrHandler(400, "id not found"));
+    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
+      return next(new CustomErrHandler(400, "id not found"));
     const myTournament = await Tournament.findById(tournamentId).populate(
       "createdBy",
       "playerName profilePicture number"
@@ -125,12 +128,33 @@ export const updateTournamentInfo = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
     const updatedFields = req.body;
+
     if (!tournamentId)
       return next(new CustomErrHandler(404, "No tournament found!"));
     if (!updatedFields)
       return next(
         new CustomErrHandler(404, "Please fill all the required fields!")
       );
+    const tournament = await Tournament.findById(tournamentId);
+
+    if (!tournament) {
+      return next(new CustomErrHandler(404, "Tournament not found"));
+    }
+
+    //  OWNERSHIP CHECK
+    if (!tournament.createdBy.equals(req.user.id)) {
+      return next(new CustomErrHandler(403, "Access denied"));
+    }
+
+    if (
+      tournament.status === "Ongoing" ||
+      tournament.status === "Completed" ||
+      tournament.status === "Cancelled"
+    )
+      return next(
+        new CustomErrHandler(403, "Sorry you cannot update this tournament")
+      );
+
     const updatedTournament = await Tournament.findByIdAndUpdate(
       tournamentId,
       updatedFields,
@@ -153,6 +177,16 @@ export const deleteTournament = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
 
+    const tournament = await Tournament.findById(tournamentId);
+
+    if (!tournament) {
+      return next(new CustomErrHandler(404, "Tournament not found"));
+    }
+
+    //  OWNERSHIP CHECK
+    if (!tournament.createdBy.equals(req.user.id)) {
+      return next(new CustomErrHandler(403, "Access denied"));
+    }
     const deletedTournament = await Tournament.findOneAndDelete({
       _id: tournamentId,
       status: { $in: ["Upcoming", "Cancelled"] },
@@ -162,7 +196,7 @@ export const deleteTournament = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "You cant delete running or completed tournament! contact admin for more help"
+          "You cannot delete running or completed tournament! contact admin for more help"
         )
       );
 

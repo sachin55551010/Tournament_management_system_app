@@ -143,7 +143,7 @@ export const ProfilePage = () => {
 
         {/* player all basic details gender number playing role etc */}
         <section className="w-full rounded-xl md:w-[95%] lg:w-[85%] mt-4 mb-6">
-          <ul className=" grid grid-cols-1 gap-3 md:grid-cols-2 mb-6">
+          <ul className=" grid grid-cols-1 gap-3 md:grid-cols-2 mb-6 lg:grid-cols-3">
             {playerDetails.map((player, index) => {
               return (
                 <li

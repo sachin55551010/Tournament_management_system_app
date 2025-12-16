@@ -24,18 +24,18 @@ export const MyTournamentTeams = () => {
   return (
     <div className="max-h-dvh min-h-dvh pt-22 overflow-y-scroll">
       {myTournamentTeams?.length > 0 && (
-        <div className="flex justify-between items-center px-4 mt-2 py-2">
-          <p>Want to add your team in this tournament ?</p>
+        <div className="flex justify-between items-center px-4 mt-4 py-6 bg-base-200 mx-3 rounded-lg">
+          <p className="text-[.75rem] font-semibold">
+            Want to add your team in this tournament ?
+          </p>
 
           {authUser ? (
             <Link to="create-team">
-              <button className="btn btn-outline btn-info h-8">Create</button>
+              <button className="btn btn-info">Create</button>
             </Link>
           ) : (
             <Link to="/login">
-              <button className="btn btn-outline btn-info h-8">
-                Log in first
-              </button>
+              <button className="btn btn-outline btn-info">Log in first</button>
             </Link>
           )}
         </div>
@@ -61,7 +61,7 @@ export const MyTournamentTeams = () => {
         </div>
       ) : (
         //  teams List
-        <TeamList teamList={myTournamentTeams} />
+        <TeamList data={data} tournamentId={tournamentId} />
       )}
     </div>
   );

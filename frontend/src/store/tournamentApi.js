@@ -55,8 +55,8 @@ export const tournamentApi = createApi({
     }),
 
     updateTournamentInfo: builder.mutation({
-      query: ({ id, updatedFields }) => ({
-        url: `/update-tournament/${id}`,
+      query: ({ tournamentId, updatedFields }) => ({
+        url: `/update-tournament/${tournamentId}`,
         method: "PATCH",
         body: updatedFields,
       }),
@@ -64,11 +64,13 @@ export const tournamentApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
           toast.success(data.message);
         } catch (error) {
           console.log(error);
-          toast.error(error.error.data.message);
+          toast.error(error.error.data.message, {
+            autoClose: 1500,
+            theme: "colored",
+          });
         }
       },
     }),

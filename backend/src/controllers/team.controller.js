@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Team } from "../models/teamSchema.js";
 import cloudinary from "../utils/cloudinary.js";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
@@ -38,6 +39,7 @@ export const createTeam = async (req, res, next) => {
       tournamentId,
       teamName: teamName.toLowerCase(),
     });
+
     if (findDuplicateTeam)
       return next(
         new CustomErrHandler(
@@ -47,7 +49,7 @@ export const createTeam = async (req, res, next) => {
       );
     const team = await Team.create({
       tournamentId,
-      teamName,
+      teamName: teamName.toLowerCase(),
       city,
       teamLogo: teamLogo,
       captainNumber: captainNumber || "",
@@ -75,7 +77,7 @@ export const getTeamsByTournament = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
 
-    if (!tournamentId)
+    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
       return next(
         new CustomErrHandler(
           404,
@@ -85,9 +87,13 @@ export const getTeamsByTournament = async (req, res, next) => {
     const myTournamentTeams = await Team.find({ tournamentId }).populate(
       "teamPlayers"
     );
-    return res.status(200).json({ myTournamentTeams, success: true });
+
+    const countTeams = await Team.countDocuments({ tournamentId });
+    return res
+      .status(200)
+      .json({ myTournamentTeams, countTeams, success: true });
   } catch (error) {
-    console.log("get teams my tournament error :", error);
+    console.log("get teams by tournament error :", error);
     next(error);
   }
 };
@@ -121,7 +127,11 @@ export const getTeamPlayers = async (req, res, next) => {
       "teamPlayers createdBy"
     );
 
-    return res.status(200).json({ myTeamPlayers, success: true });
+    if (!myTeamPlayers) return next(new CustomErrHandler(404, "team found"));
+
+    const countPlayers = myTeamPlayers.teamPlayers.length;
+
+    return res.status(200).json({ myTeamPlayers, countPlayers, success: true });
   } catch (error) {
     console.log("get team players error ", error);
     next(error);

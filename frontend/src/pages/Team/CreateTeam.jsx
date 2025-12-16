@@ -39,7 +39,7 @@ export const CreateTeam = () => {
   };
 
   return (
-    <div className="fixed inset-0 h-dvh overflow-y-scroll bg-base-100 pt-20 px-4 flex justify-center ">
+    <div className="h-dvh px-2 flex justify-center">
       <fieldset
         disabled={isLoading}
         className={`${
@@ -48,7 +48,7 @@ export const CreateTeam = () => {
       >
         <form
           onSubmit={handleSubmitBtn}
-          className="w-full h-fit shadow-[0px_0px_10px_rgba(0,0,0,.5)] rounded-md flex flex-col items-center bg-base-300/50 p-4 md:w-[70%]"
+          className="w-full h-fit border border-base-content/20 rounded-md flex flex-col items-center p-4 md:w-[70%]"
         >
           {/* team logo or picture  */}
           <div className="flex flex-col items-center gap-3">

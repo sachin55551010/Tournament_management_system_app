@@ -2,6 +2,7 @@ import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 import {
   createInviteLink,
+  getInviteData,
   validateInviteLink,
 } from "../controllers/inviteLink.controller.js";
 
@@ -14,3 +15,5 @@ inviteLink_route.post(
 );
 
 inviteLink_route.post("/join-team/:token", isAuthenticated, validateInviteLink);
+
+inviteLink_route.get("/invite/:token", getInviteData);

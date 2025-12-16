@@ -16,7 +16,7 @@ export const TournamentInfo = () => {
   return (
     <div className="">
       <Header data={data?.myTournament?.tournamentName} />
-      <nav className="fixed w-full bg-base-200 pt-14 flex justify-around">
+      <nav className="fixed z-[998] w-full bg-base-200 pt-14 flex justify-around">
         <NavLink
           to="tournament-info"
           className={({ isActive }) =>

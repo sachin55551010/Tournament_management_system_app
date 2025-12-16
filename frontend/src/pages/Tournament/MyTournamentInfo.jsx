@@ -15,7 +15,7 @@ export const MyTournamentInfo = () => {
     <div className="pt-30 max-h-dvh overflow-y-auto flex flex-col items-center p-4">
       <div className="w-full md:w-[70%] flex flex-col gap-8">
         {/* organised information  */}
-        <div className="shadow-[0px_0px_8px_rgba(0,0,0,1)] rounded-md bg-base-100">
+        <div className="border border-base-content/20 rounded-md bg-base-100">
           <h1 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
             Organiser Detail
           </h1>
@@ -58,7 +58,7 @@ export const MyTournamentInfo = () => {
         {isLoading ? (
           <div className="skeleton h-60 w-full"></div>
         ) : (
-          <div className="flex flex-col w-full rounded-md shadow-[0px_0px_10px_rgba(0,0,0,1)]">
+          <div className="flex flex-col w-full rounded-md border border-base-content/20">
             <div className="py-2 bg-base-300 text-base-content/70 flex justify-between rounded-t-md">
               <h1 className="pl-2 font-extrabold">Tournament Detail</h1>
 
@@ -131,7 +131,7 @@ export const MyTournamentInfo = () => {
         )}
 
         {/* additional Information  */}
-        <div className="flex flex-col w-full rounded-md shadow-[0px_0px_10px_rgba(0,0,0,1)]">
+        <div className="flex flex-col w-full rounded-md border border-base-content/20">
           <h1 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
             Additional Information
           </h1>

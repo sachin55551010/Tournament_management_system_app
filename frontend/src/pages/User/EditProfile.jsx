@@ -229,6 +229,9 @@ export const EditProfile = () => {
                   id="roles"
                   className="w-full border h-10 rounded-lg capitalize"
                 >
+                  <option value="" disabled>
+                    Select Playing Role
+                  </option>
                   {PLAYING_ROLE.map((val, index) => {
                     return (
                       <option
@@ -260,6 +263,9 @@ export const EditProfile = () => {
                   id="batting-style"
                   className="w-full border h-10 rounded-lg capitalize"
                 >
+                  <option value="" disabled>
+                    Select Batting Type
+                  </option>
                   {BATTING_STYLE.map((val, index) => {
                     return (
                       <option
@@ -290,6 +296,9 @@ export const EditProfile = () => {
                   id="bowling-style"
                   className="w-full border h-10 rounded-lg capitalize"
                 >
+                  <option value="" disabled>
+                    Select Bowling Type
+                  </option>
                   {BOWLING_STYLE.map((val, index) => {
                     return (
                       <option

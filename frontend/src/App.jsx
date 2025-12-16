@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/User/LoginPage";
 import { useSelector } from "react-redux";
@@ -32,6 +32,8 @@ import { NotFound } from "./pages/NotFound";
 import { CreateTeam } from "./pages/Team/CreateTeam";
 import { AddTeamPlayer } from "./pages/Team/AddTeamPlayer";
 import { JoinTeamPage } from "./pages/Team/JoinTeamPage";
+import { useEffect } from "react";
+import { StartMatch } from "./pages/Match/StartMatch";
 function App() {
   const { authUser } = useSelector((state) => state.auth);
   const { isLoading } = useCheckAuthUserQuery();
@@ -39,7 +41,15 @@ function App() {
   const { chooseTheme } = useSelector((state) => state.theme);
 
   const socket = createSocket();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const redirectTo = localStorage.getItem("redirectAfterLogin");
 
+    if (authUser && redirectTo) {
+      navigate(redirectTo);
+      localStorage.removeItem("redirectAfterLogin");
+    }
+  }, [authUser, navigate]);
   if (isLoading && !authUser) {
     return (
       <div
@@ -59,7 +69,7 @@ function App() {
         {/* routes  */}
         <Routes>
           {/*
-           * user dashboard //?parent component
+           * user dashboard // app main page
            * contain home page
            * contain all tournament page
            * contain all matches page
@@ -186,9 +196,18 @@ function App() {
             <Route index element={<Navigate to="tournament-info" replace />} />
 
             <Route path="tournament-info" element={<MyTournamentInfo />} />
+
             <Route
               path="tournament-matches"
               element={<MyTournamentMatches />}
+            />
+            <Route
+              path="tournament-matches/start"
+              element={authUser && <StartMatch mode="start" />}
+            />
+            <Route
+              path="tournament-matches/schedule"
+              element={authUser && <StartMatch mode="schedule" />}
             />
           </Route>
 
@@ -197,6 +216,7 @@ function App() {
           {/* team join route */}
           <Route path="/join-team/:token" element={<JoinTeamPage />} />
           {/* for invalid routes */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

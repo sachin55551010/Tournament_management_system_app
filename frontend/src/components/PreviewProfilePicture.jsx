@@ -20,7 +20,7 @@ export const PreviewProfilePicture = () => {
   const playerName = data?.playerProfile?.playerName;
 
   return (
-    <div className="fixed z-100 inset-0 w-full flex justify-center pt-20 h-dvh backdrop-blur-lg overflow-hidden">
+    <div className="fixed z-[999] inset-0 w-full flex justify-center pt-20 h-dvh backdrop-blur-lg overflow-hidden">
       <div className="relative h-96 w-96 rounded-full flex flex-col items-center">
         {profilePicture === "" ? (
           <div className="rounded-full h-96 w-96 flex items-center justify-center bg-primary">

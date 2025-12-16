@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { toast } from "react-toastify";
 
 export const inviteLinkApi = createApi({
   reducerPath: "inviteLink_api",
@@ -8,6 +9,24 @@ export const inviteLinkApi = createApi({
   }),
   tagTypes: ["Invite"],
   endpoints: (builder) => ({
+    // get inviteLink data
+    getInviteData: builder.query({
+      query: (token) => ({
+        url: `/invite/${token}`,
+      }),
+      providesTags: ["Invite"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          console.log(error);
+          toast.error(error.error.data.message, {
+            autoClose: 1500,
+          });
+        }
+      },
+    }),
+
     createInviteLink: builder.mutation({
       query: ({ tournamentId, teamId }) => ({
         url: `/create-invite/${tournamentId}/${teamId}`,
@@ -20,9 +39,24 @@ export const inviteLinkApi = createApi({
         url: `/join-team/${token}`,
         method: "POST",
       }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          console.log(data);
+        } catch (error) {
+          console.log(error);
+          toast.error(error.error.data.message, {
+            autoClose: 2000,
+            theme: "dark",
+          });
+        }
+      },
     }),
   }),
 });
 
-export const { useCreateInviteLinkMutation, useValidateInviteLinkMutation } =
-  inviteLinkApi;
+export const {
+  useCreateInviteLinkMutation,
+  useValidateInviteLinkMutation,
+  useGetInviteDataQuery,
+} = inviteLinkApi;

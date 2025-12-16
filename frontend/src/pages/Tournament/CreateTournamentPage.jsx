@@ -156,7 +156,7 @@ export const CreateTournamentPage = ({ mode }) => {
           ) : (
             <form
               onSubmit={handleFormSubmit}
-              className="mt-18 w-[95%] flex flex-col items-center pb-6 md:w-[70%] lg:w-[60%] gap-6"
+              className="mt-18 w-[97%] flex flex-col items-center p-4 border md:w-[70%] lg:w-[60%] gap-6 border-base-content/20 rounded-lg mb-6"
             >
               {/* form input fields */}
               <div className="w-full flex flex-col gap-4 md:grid grid-cols-2">
@@ -316,9 +316,9 @@ export const CreateTournamentPage = ({ mode }) => {
               </div>
 
               {/* tournament category */}
-              <div className="w-full">
+              <div className="w-full p-2">
                 <span className="font-bold">Tournament Category *</span>
-                <div className="flex justify-between mt-4 gap-4 md:justify-normal">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
                   {TOURNAMENT_CATEGORY.map((val, index) => {
                     return (
                       <div
@@ -341,7 +341,7 @@ export const CreateTournamentPage = ({ mode }) => {
               {/* Ball type */}
               <div className="w-full">
                 <span className="font-bold">Select Ball Type *</span>
-                <div className="grid grid-cols-4 md:flex gap-4 mt-4 justify-normal">
+                <div className="grid grid-cols-3 md:flex gap-6 mt-4 justify-normal">
                   {BALL_TYPE.map((val, index) => {
                     return (
                       <div
