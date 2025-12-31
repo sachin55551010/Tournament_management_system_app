@@ -1,18 +1,17 @@
 import { TriangleAlert } from "lucide-react";
-import { useDeleteTournamentMutation } from "../../store/tournamentApi";
+import { useDeleteTeamMutation } from "../../store/teamApi";
+import { useNavigate } from "react-router-dom";
 
-export const DeleteConfirmModal = ({
-  setIsDeleteModal,
+export const DeleteTeamConfirmModal = ({
+  setDeleteTeamModalOpen,
+  teamId,
   tournamentId,
-  navigate,
 }) => {
-  const [deleteTournament, { isLoading: isDeleting }] =
-    useDeleteTournamentMutation();
-
-  const handleDeleteBtn = async () => {
-    await deleteTournament(tournamentId).unwrap();
-    setIsDeleteModal(false);
-    navigate("/my-tournament/tournaments");
+  const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation();
+  const navigate = useNavigate();
+  const handleTeamDeleteBtn = async () => {
+    await deleteTeam({ tournamentId, teamId }).unwrap();
+    navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
   };
 
   return (
@@ -24,13 +23,14 @@ export const DeleteConfirmModal = ({
 
         <h1 className="font-black text-2xl">Are You Sure ?</h1>
         <p className="font-bold">
-          Are you sure you want to delete this tournament? This action cannot be
-          undone.
+          Delete this team permanently? The team will be removed from the
+          tournament, and you will no longer be part of it. This action cannot
+          be undone.
         </p>
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full md:flex-row">
           <button
-            onClick={handleDeleteBtn}
-            className={`btn btn-error rounded-md ${
+            onClick={handleTeamDeleteBtn}
+            className={`btn btn-error rounded-md md:flex-1 ${
               isDeleting ? "cursor-not-allowed" : ""
             }`}
             disabled={isDeleting}
@@ -42,8 +42,8 @@ export const DeleteConfirmModal = ({
             )}
           </button>
           <button
-            onClick={() => setIsDeleteModal(false)}
-            className={`btn btn-accent rounded-md`}
+            onClick={() => setDeleteTeamModalOpen(false)}
+            className={`btn md:flex-1 btn-accent rounded-md`}
             disabled={isDeleting}
           >
             Cancel

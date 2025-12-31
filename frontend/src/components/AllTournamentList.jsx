@@ -101,7 +101,7 @@ export const AllTournamentList = () => {
             <li
               onClick={() => handleGetTournamentInfoBtn(tournament._id)}
               key={tournament._id}
-              className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer border border-base-content/20 hover:scale-105  transition-all duration-200"
+              className="relative flex flex-col rounded-lg h-50 bg-base-100 cursor-pointer border border-base-content/20 hover:scale-105  transition-all duration-200"
             >
               {/* header */}
               <div className="h-[70%] p-2 flex flex-col justify-around">

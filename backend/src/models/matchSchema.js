@@ -7,6 +7,11 @@ const matchSchema = new mongoose.Schema(
       ref: "Tournament",
       required: true,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Player",
+      required: true,
+    },
     firstTeamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
@@ -25,15 +30,23 @@ const matchSchema = new mongoose.Schema(
     tossWinnerTeamId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Team",
+      required: function () {
+        this.status === "ongoing";
+      },
     },
     decision: {
       type: String,
       enum: ["Bat", "Bowl"],
-      required: true,
+      required: function () {
+        return this.status === "live";
+      },
     },
 
-    matchDate: {
+    matchScheduleDate: {
       type: Date,
+      required: function () {
+        this.status === "scheduled";
+      },
     },
     round: {
       type: String,
@@ -53,7 +66,7 @@ const matchSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["scheduled", "ongoing", "completed", "abandoned"],
+      enum: ["scheduled", "live", "completed", "abandoned"],
       default: "scheduled",
     },
     result: {

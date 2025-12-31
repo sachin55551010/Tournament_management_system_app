@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 import { Match } from "../models/matchSchema.js";
 import { Tournament } from "../models/tournamentSchema.js";
+import { TOURNAMENT_CATEGORY } from "../../../frontend/src/constant/tournamentCategory.js";
 export const createMatch = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
@@ -72,9 +73,79 @@ export const createMatch = async (req, res, next) => {
   }
 };
 
-export const scheduleMatch = (req, res, next) => {
+export const scheduleMatch = async (req, res, next) => {
   try {
+    const { tournamentId } = req.params;
+    const { firstTeamId, secondTeamId, overs, matchScheduleDate, round } =
+      req.body;
+
+    if (
+      !firstTeamId?.trim() ||
+      !secondTeamId?.trim() ||
+      !overs ||
+      !matchScheduleDate ||
+      !round
+    )
+      return next(new CustomErrHandler(400, "All fields are required"));
+    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
+      return next(new CustomErrHandler(400, "No tournament found"));
+
+    const organiserId = await Tournament.findById(tournamentId);
+    if (!organiserId.createdBy.equals(req.user.id))
+      return next(
+        new CustomErrHandler(403, "Unautherised request Access denied")
+      );
+    if (firstTeamId === secondTeamId)
+      return next(new CustomErrHandler(400, "Both teams cannot be same"));
+    const checkIsMatchAlreadyExists = await Match.findOne({
+      $or: [
+        { firstTeamId, secondTeamId },
+        { firstTeamId: secondTeamId, secondTeamId: firstTeamId },
+      ],
+    })
+      .populate("firstTeamId", "teamName")
+      .populate("secondTeamId", "teamName");
+
+    if (checkIsMatchAlreadyExists && checkIsMatchAlreadyExists.round === round)
+      return next(
+        new CustomErrHandler(
+          403,
+          `A ${checkIsMatchAlreadyExists.round} match between ${checkIsMatchAlreadyExists.firstTeamId.teamName} and ${checkIsMatchAlreadyExists.secondTeamId.teamName} already schedule. Please choose a different round or schedule another match.`
+        )
+      );
+    const match = await Match.create({
+      tournamentId,
+      firstTeamId,
+      secondTeamId,
+      overs,
+      matchScheduleDate,
+      round,
+      createdBy: req.user.id,
+    });
+
+    return res
+      .status(201)
+      .json({ match, success: true, message: "Match Schedule successfully" });
   } catch (error) {
     console.log("Schedule Match error : ", error);
+    next(error);
+  }
+};
+
+//get all matches from specific tournament
+export const myTournamentMatches = async (req, res, next) => {
+  try {
+    const { tournamentId } = req.params;
+    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
+      return next(new CustomErrHandler(400, "No Tournament found"));
+    const matches = await Match.find({ tournamentId })
+      .populate("firstTeamId", "teamName city teamLogo")
+      .populate("secondTeamId", "teamName city teamLogo")
+      .populate("tournamentId", "ground city");
+
+    return res.status(200).json({ matches, success: true });
+  } catch (error) {
+    console.log("get my tournament matches : ", error);
+    next(error);
   }
 };

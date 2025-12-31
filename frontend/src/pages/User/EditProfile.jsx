@@ -92,7 +92,9 @@ export const EditProfile = () => {
   };
 
   return (
-    <div className={`${picturePopup && "h-dvh overflow-hidden"}`}>
+    <div
+      className={`${picturePopup && "overflow-hidden"} overflow-y-scroll h-dvh`}
+    >
       <div
         className={`flex flex-col items-center ${
           picturePopup && "blur-md transition-all duration-200"
@@ -106,7 +108,7 @@ export const EditProfile = () => {
         >
           <form
             onSubmit={handleSubmitBtn}
-            className="mt-18 rounded-xl bg-base-200 flex flex-col items-center p-2"
+            className="mt-18 rounded-xl border border-base-content/20 flex flex-col items-center p-2 mb-4"
           >
             <div className="relative flex flex-col items-center">
               <div

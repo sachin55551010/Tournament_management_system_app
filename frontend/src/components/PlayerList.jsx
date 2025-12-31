@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { useGetTournamentInfoQuery } from "../store/tournamentApi";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { DummyListLoadingSkelton } from "./ui/DummyLoadingSkelton";
-import noData from "../../assets/undraw_no-data.svg";
+import noData from "../../assets/No data-amico.svg";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
 import bat from "../../assets/batsman.svg";
 import ball from "../../assets/bowler.svg";
-import { BadgeCheck, UserRound, Users } from "lucide-react";
+import { BadgeCheck, SquarePen, UserRound, Users } from "lucide-react";
 import { useState } from "react";
 import { GenerateInviteLinkModal } from "./GenerateInviteLinkModal";
 import { useCreateInviteLinkMutation } from "../store/inviteTeamLinkApi";
@@ -14,6 +14,7 @@ import { useCreateInviteLinkMutation } from "../store/inviteTeamLinkApi";
 export const PlayerList = ({ data }) => {
   const [addPlayerModal, setAddPlayerModal] = useState(false);
   const { tournamentId } = useParams();
+  const navigate = useNavigate();
   const { authUser } = useSelector((state) => state.auth);
   const { data: myTournamentInfo, isLoading } =
     useGetTournamentInfoQuery(tournamentId);
@@ -23,6 +24,7 @@ export const PlayerList = ({ data }) => {
   const teamAdminId = data?.myTeamPlayers?.createdBy._id;
 
   const teamId = data?.myTeamPlayers?._id;
+
   const [
     createInviteLink,
     { data: inviteLinkUrl, isLoading: inviteLinkLoading },
@@ -44,6 +46,11 @@ export const PlayerList = ({ data }) => {
   const canAddPlayers =
     loggedInUserId === tournamentOrganiserId || loggedInUserId === teamAdminId;
 
+  const handleEditBtn = () => {
+    navigate(
+      `/my-tournament/tournaments/${tournamentId}/tournament-teams/update-team/${teamId}`
+    );
+  };
   // dummy data loading screen while data loading from db
   if (isLoading) {
     return <DummyListLoadingSkelton />;
@@ -61,51 +68,58 @@ export const PlayerList = ({ data }) => {
           </Link>
         </div>
       ) : (
-        <div className="mt-4 bg-base-200 py-4 px-2 rounded-lg">
-          {canAddPlayers ? (
-            <div className="flex items-center justify-between ml-3">
+        <>
+          <div className="mt-4 bg-base-200 py-4 px-2 rounded-lg">
+            {canAddPlayers ? (
+              <div className="flex items-center justify-between ml-3">
+                <div>
+                  <h1 className="font-semibold text-lg">Add more players ?</h1>
+                  <p className="text-[.75rem] text-base-content/60 mt-4">
+                    Add more players in your team via invite link
+                  </p>
+                </div>
+                {canAddPlayers && (
+                  <button onClick={handleAddPlayerBtn} className="btn btn-info">
+                    Invite
+                  </button>
+                )}
+              </div>
+            ) : (
               <div>
-                <h1 className="font-semibold text-lg">Add more players ?</h1>
-                <p className="text-[.75rem] text-base-content/60 mt-4">
-                  Add more players in your team via invite link
+                <p className="font-semibold text-[.75rem]">
+                  Please Ask Organiser or Team admin to add more players
                 </p>
               </div>
-
-              <button onClick={handleAddPlayerBtn} className="btn btn-info">
-                Invite
+            )}
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="badge badge-soft badge-success flex gap-2 my-4 items-center py-5 px-4">
+              <Users size={25} />
+              <h1 className="font-bold text-base-content/60">Players</h1>
+              <span className="font-bold text-xl">{totalPlayersInTeam}</span>
+            </div>
+            {canAddPlayers && (
+              <button
+                onClick={handleEditBtn}
+                className="btn btn-soft btn-success flex gap-2"
+              >
+                <SquarePen size={18} />
+                <h1 className="text-[.8rem] font-semibold">Edit</h1>
               </button>
-            </div>
-          ) : (
-            <div>
-              <p className="font-semibold text-[.75rem]">
-                Please Ask Organiser or Team admin to add more players
-              </p>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </>
       )}
 
       {/* player list */}
       <div>
         {playerList.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-[calc(100dvh-10rem)] gap-4">
-            <img src={noData} alt="" className="h-60 w-auto" />
+          <div className="flex flex-col items-center gap-4">
+            <img src={noData} alt="" className="h-50 w-auto" />
             <h1 className="italic">No players found!</h1>
           </div>
         ) : (
           <>
-            <div className="flex gap-1 mt-2 py-6 rounded-lg px-8 items-center">
-              <div className="flex gap-2 items-center">
-                <div className="flex rounded-lg">
-                  <Users size={25} />
-                </div>
-
-                <h1 className="font-bold text-base-content/60">
-                  Total Players
-                </h1>
-                <span className="text-xl font-bold">{totalPlayersInTeam}</span>
-              </div>
-            </div>
             <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {playerList.map((player) => {
                 return (

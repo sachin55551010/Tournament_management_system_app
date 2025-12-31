@@ -10,13 +10,13 @@ export const matchApi = createApi({
   tagTypes: ["Match"],
   endpoints: (builder) => ({
     // create match
-    createMatch: builder.mutation({
+    startMatch: builder.mutation({
       query: ({ data, tournamentId }) => ({
         url: `/create-match/${tournamentId}/matches`,
         method: "POST",
         body: data,
       }),
-      providesTags: ["Match"],
+      invalidatesTags: ["Match"],
     }),
 
     //schedule match
@@ -26,9 +26,21 @@ export const matchApi = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Match"],
+    }),
+
+    getMyTournamentTeams: builder.query({
+      query: (tournamentId) => ({
+        url: `/tournament-matches/${tournamentId}`,
+        method: "GET",
+      }),
       providesTags: ["Match"],
     }),
   }),
 });
 
-export const { useCreateMatchMutation, useScheduleMatchMutation } = matchApi;
+export const {
+  useStartMatchMutation,
+  useScheduleMatchMutation,
+  useGetMyTournamentTeamsQuery,
+} = matchApi;

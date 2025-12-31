@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
 import { useState } from "react";
 import { ChooseMatchActionModal } from "../../components/ui/ChooseMatchActionModal";
+import { MatchList } from "../../components/MatchList";
 export const MyTournamentMatches = () => {
   const [isMatchActionModal, setIsMatchActionModal] = useState(false);
   const { authUser } = useSelector((state) => state.auth);
@@ -15,9 +16,9 @@ export const MyTournamentMatches = () => {
   const varifiedOrganiser = organiserId === loggedInUserId;
 
   return (
-    <div className="pt-24 h-dvh overflow-y-scroll">
+    <div className="pt-24 h-dvh overflow-y-scroll p-2">
       {varifiedOrganiser && (
-        <div className="flex justify-between items-center px-3">
+        <div className="flex justify-between items-center px-3 bg-base-300/40 mt-4 py-6 rounded-lg">
           <h1>Start a new match</h1>
           <button
             onClick={() => setIsMatchActionModal(true)}
@@ -30,6 +31,7 @@ export const MyTournamentMatches = () => {
       {isMatchActionModal && (
         <ChooseMatchActionModal setIsMatchActionModal={setIsMatchActionModal} />
       )}
+      <MatchList tournamentId={tournamentId} />
     </div>
   );
 };

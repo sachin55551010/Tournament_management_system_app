@@ -186,7 +186,11 @@ function App() {
           >
             <Route
               path="tournament-teams/create-team"
-              element={authUser && <CreateTeam />}
+              element={authUser && <CreateTeam mode="create" />}
+            />
+            <Route
+              path="tournament-teams/update-team/:teamId"
+              element={authUser && <CreateTeam mode="edit" />}
             />
             <Route path="tournament-teams" element={<MyTournamentTeams />} />
             <Route

@@ -164,26 +164,23 @@ export const ProfilePage = () => {
             })}
           </ul>
 
-          <div className="flex gap-4">
+          <div className="grid gap-2 md:grid-cols-2">
             <Link
               to={`/profile/career-stats/${playerId}`}
-              className="btn btn-info flex-1"
+              className="btn btn-info"
             >
               Career Stats
             </Link>
 
             {authUser?.player?._id === data?.playerProfile?._id && (
-              <button
-                onClick={handleLogoutBtn}
-                className="btn btn-error flex-1"
-              >
+              <button onClick={handleLogoutBtn} className="btn btn-error">
                 Log Out
               </button>
             )}
           </div>
         </section>
       </div>
-      {picturePopup && <PreviewProfilePicture />}
+      {picturePopup && <PreviewProfilePicture playerId={playerId} />}
     </div>
   );
 };

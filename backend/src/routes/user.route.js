@@ -16,5 +16,6 @@ user_route.post("/logout", logout);
 
 user_route.patch("/update-player", isAuthenticated, updatePlayer);
 
-user_route.patch("/remove-photo", isAuthenticated, removeProfilePic);
 user_route.get("/profile/:id", profile);
+
+user_route.patch("/remove-photo/:playerId", isAuthenticated, removeProfilePic);

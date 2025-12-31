@@ -1,6 +1,7 @@
-import { MapPin, Share2, Users } from "lucide-react";
+import { MapPin, Share2, Trash2, Users } from "lucide-react";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 export const TeamList = ({ data, tournamentId }) => {
   const navigate = useNavigate();
   const handleTeamClickBtn = (teamId) => {
@@ -9,17 +10,23 @@ export const TeamList = ({ data, tournamentId }) => {
     );
   };
 
+  const handleDeleteBtn = () => {
+    setRemoveTeams(true);
+  };
+
   const teamList = data?.myTournamentTeams;
   const teamCount = data?.countTeams;
 
   return (
     <>
-      <div className="flex gap-2 ml-4 mt-6 items-center">
-        <Users size={25} />
-        <h1 className="font-bold text-base-content/60">Teams</h1>
-        <span className="font-bold text-xl">{teamCount}</span>
+      <div className="mx-3 flex items-center justify-between px-2">
+        <div className="badge badge-soft badge-success flex gap-2 my-4 items-center py-6 px-4">
+          <Users size={25} />
+          <h1 className="font-bold text-base-content/60">Teams</h1>
+          <span className="font-bold text-xl">{teamCount}</span>
+        </div>
       </div>
-      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 mt-4">
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3 my-4">
         {teamList?.map((teams) => {
           return (
             <li
@@ -30,7 +37,7 @@ export const TeamList = ({ data, tournamentId }) => {
               {/* team logo */}
               <div>
                 {teams.teamLogo === "" ? (
-                  <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center font-extrabold text-bg-content">
+                  <div className="h-12 w-12 rounded-full bg-base-300 border flex items-center justify-center font-extrabold text-bg-content">
                     {defaultAvatar(teams.teamName)}
                   </div>
                 ) : (

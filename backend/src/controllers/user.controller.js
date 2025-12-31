@@ -108,13 +108,23 @@ export const updatePlayer = async (req, res, next) => {
 
 export const removeProfilePic = async (req, res, next) => {
   try {
-    let player = await Player.findByIdAndUpdate(
+    const { playerId } = req.params;
+    if (!playerId || !mongoose.Types.ObjectId.isValid(playerId))
+      return next(
+        new CustomErrHandler(404, "No user found or invalid user id")
+      );
+
+    if (req.user.id !== playerId)
+      return next(
+        new CustomErrHandler(400, "Unatherised request. Access denied!")
+      );
+
+    await Player.findByIdAndUpdate(
       req.user.id,
       { profilePicture: "" },
       { new: true }
     );
     res.status(200).json({
-      player,
       success: true,
       message: "profile picture removed",
     });

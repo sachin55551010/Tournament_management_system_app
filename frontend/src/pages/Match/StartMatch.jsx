@@ -7,7 +7,10 @@ import { useGetTeamsByTournamentQuery } from "../../store/teamApi";
 import { TeamSelectModal } from "../../components/ui/TeamSelectModal";
 import { ROUND } from "../../constant/matchRound";
 import { toast } from "react-toastify";
-import { useCreateMatchMutation } from "../../store/matchApi";
+import {
+  useScheduleMatchMutation,
+  useStartMatchMutation,
+} from "../../store/matchApi";
 import { CircleAlert } from "lucide-react";
 export const StartMatch = ({ mode }) => {
   const [firstTeam, setFirstTeam] = useState("");
@@ -22,6 +25,7 @@ export const StartMatch = ({ mode }) => {
     tossWinnerTeamId: "",
     round: "",
     decision: "",
+    matchScheduleDate: "",
   });
 
   const handleTossWinnerBtn = (teamId) => {
@@ -44,7 +48,11 @@ export const StartMatch = ({ mode }) => {
   const loggedInUserId = authUser?.player?._id;
   const varifiedOrganiser = organiserId === loggedInUserId;
 
-  const [createTeam, { isLoading }] = useCreateMatchMutation();
+  const [startMatch, { isLoading: isStartMatchLoading }] =
+    useStartMatchMutation();
+  const [scheduleMatch, { isLoading: isScheduleMatchLoading }] =
+    useScheduleMatchMutation();
+
   const handleTeamSelect = ({ teamName, teamId }) => {
     if (isFirstModalOpen) {
       setFirstTeam(teamName);
@@ -86,13 +94,22 @@ export const StartMatch = ({ mode }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!checkValidation()) return;
-      await createTeam({ data: matchData, tournamentId }).unwrap();
-      toast.success("Match created successfully");
+      if (mode === "start") {
+        if (!checkValidation()) return;
+        await startMatch({ data: matchData, tournamentId }).unwrap();
+        toast.success("Match created successfully");
+      }
+      if (mode === "schedule") {
+        const matchFields = Object.fromEntries(
+          Object.entries(matchData).filter(([key, val]) => val !== "")
+        );
+
+        await scheduleMatch({ data: matchFields, tournamentId }).unwrap();
+      }
     } catch (error) {
       console.log(error);
       toast.error(error.data.message, {
-        autoClose: 7000,
+        autoClose: 3000,
         theme: "colored",
       });
     }
@@ -121,13 +138,13 @@ export const StartMatch = ({ mode }) => {
                 Configure Match Details
               </h1>
 
-              <div className="flex gap-2 px-2 bg-red-400/30 items-center rounded-lg py-2 ">
+              <div className="flex gap-2 px-2 bg-red-400/20 items-center rounded-lg py-2 ">
                 <div>
                   <CircleAlert size={22} className="text-red-500" />
                 </div>
-                <p className="text-[.75rem] font-bold">
+                <p className="text-[.75rem]">
                   If teams have not been added to the tournament, please add
-                  them first before starting a match.
+                  team first before start or schedule a match.
                 </p>
               </div>
             </header>
@@ -142,6 +159,7 @@ export const StartMatch = ({ mode }) => {
                     setFirstTeam(e.target.value);
                     setIsFirstModalOpen(true);
                   }}
+                  required
                   type="text"
                   className="border border-base-content/40 h-10 rounded-lg pl-3 outline-0"
                   placeholder="Choose first team"
@@ -165,6 +183,7 @@ export const StartMatch = ({ mode }) => {
                     setSecondTeam(e.target.value);
                     setIsSecondModalOpen(true);
                   }}
+                  required
                   type="text"
                   className="border border-base-content/40 h-10 rounded-lg pl-3 outline-0"
                   placeholder="Choose second team"
@@ -202,6 +221,7 @@ export const StartMatch = ({ mode }) => {
                     setMatchData({ ...matchData, overs: value });
                   }
                 }}
+                required
                 type="number"
                 className="border border-base-content/40 h-10 rounded-lg pl-3 outline-0 md:w-[40%]"
                 max={50}
@@ -236,11 +256,19 @@ export const StartMatch = ({ mode }) => {
               </label>
             </div>
 
-            {/* choose date */}
+            {/* schedule match date */}
             <div className="w-full mt-4">
               <label htmlFor="" className="flex flex-col gap-2">
-                <h1>Choose Date</h1>
+                <h1>Choose Date*</h1>
                 <input
+                  value={matchData.matchScheduleDate}
+                  onChange={(e) =>
+                    setMatchData({
+                      ...matchData,
+                      matchScheduleDate: e.target.value,
+                    })
+                  }
+                  required
                   type="date"
                   className="border border-base-content/40 h-10 rounded-lg px-2"
                 />

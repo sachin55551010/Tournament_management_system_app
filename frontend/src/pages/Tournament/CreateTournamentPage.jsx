@@ -90,7 +90,6 @@ export const CreateTournamentPage = ({ mode }) => {
       if (!validateDates()) return;
 
       if (mode === "edit" && data) {
-        console.log("update tournament run");
         setTournamentInfo({
           tournamentName: data?.myTournament?.tournamentName,
           organiserName: data?.myTournament?.ograniserName,
@@ -139,7 +138,7 @@ export const CreateTournamentPage = ({ mode }) => {
 
   return (
     <div className={`${isDeleteModal && "overflow-hidden h-dvh"}`}>
-      <div className={`${isDeleteModal ? "blur" : ""}`}>
+      <div>
         <Header
           data={
             mode === "create"
@@ -403,17 +402,21 @@ export const CreateTournamentPage = ({ mode }) => {
 
               <div
                 className={`w-full ${
-                  mode === "edit" && "grid grid-cols-2 gap-2"
+                  mode === "edit" && "grid grid-cols-1 gap-2 md:grid-cols-2"
                 }`}
               >
-                <button className="btn btn-soft btn-success w-full rounded-lg">
+                <button
+                  className={`btn btn-success w-full rounded-lg ${
+                    mode === "edit" && "btn-warning"
+                  }`}
+                >
                   {mode === "create" ? "Create" : "Update"}
                 </button>
                 {mode === "edit" && (
                   <button
                     type="button"
                     onClick={() => setIsDeleteModal(true)}
-                    className="btn btn-soft btn-success w-full rounded-lg"
+                    className="btn btn-error w-full rounded-lg"
                   >
                     Delete
                   </button>

@@ -66,6 +66,30 @@ export const teamApi = createApi({
       }),
       providesTags: ["Player"],
     }),
+
+    getTeamById: builder.query({
+      query: (teamId) => ({
+        url: `get-team/${teamId}`,
+        method: "GET",
+      }),
+      providesTags: ["Team"],
+    }),
+
+    deleteTeam: builder.mutation({
+      query: ({ tournamentId, teamId }) => ({
+        url: `/delete-team/${tournamentId}/${teamId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Team"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          toast.success(data.message);
+        } catch (error) {
+          toast.error(error.error.data.message);
+        }
+      },
+    }),
   }),
 });
 
@@ -73,4 +97,6 @@ export const {
   useCreateTeamMutation,
   useGetTeamsByTournamentQuery,
   useGetTeamPlayersQuery,
+  useGetTeamByIdQuery,
+  useDeleteTeamMutation,
 } = teamApi;

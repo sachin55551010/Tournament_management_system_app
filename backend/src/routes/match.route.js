@@ -1,6 +1,10 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
-import { createMatch, scheduleMatch } from "../controllers/match.controller.js";
+import {
+  createMatch,
+  myTournamentMatches,
+  scheduleMatch,
+} from "../controllers/match.controller.js";
 
 export const match_route = express.Router();
 
@@ -15,5 +19,7 @@ match_route.post(
   isAuthenticated,
   scheduleMatch
 );
+
+match_route.get("/tournament-matches/:tournamentId", myTournamentMatches);
 
 // match_route.patch("/update-match/:matchId")

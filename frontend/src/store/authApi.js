@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { clearAuthUser, setAuthUser } from "./authSlice";
-import { toast, Zoom } from "react-toastify";
+import { toast } from "react-toastify";
 export const authApi = createApi({
   reducerPath: "auth_api",
   baseQuery: fetchBaseQuery({
@@ -59,24 +59,22 @@ export const authApi = createApi({
             theme: "colored",
             autoClose: 1000,
             hideProgressBar: true,
-            transition: Zoom,
           });
         }
       },
     }),
 
     removeProfilePicture: builder.mutation({
-      query: () => ({
-        url: "/remove-photo",
+      query: (playerId) => ({
+        url: `/remove-photo/${playerId}`,
         method: "PATCH",
       }),
       invalidatesTags: ["Auth"],
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data.message);
 
-          // toast.success(data)
+          toast.success(data.message);
         } catch (error) {
           console.log("remove photo error : ", error);
         }
