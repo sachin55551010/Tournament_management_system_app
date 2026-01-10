@@ -16,8 +16,23 @@ const teamSchema = new mongoose.Schema(
 
     teamPlayers: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Player",
+        _id: false,
+        player: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Player",
+        },
+        role: {
+          type: String,
+          enum: [
+            "Batsman",
+            "Bowler",
+            "All Rounder",
+            "Captain",
+            "Vice Captain",
+            "Wicket Keeper",
+          ],
+          default: null,
+        },
       },
     ],
     city: {

@@ -6,7 +6,7 @@ export const tournamentApi = createApi({
     baseUrl: `${import.meta.env.VITE_BACKEND_URL}/tournament`,
     credentials: "include",
   }),
-  tagTypes: ["Tournament"],
+  tagTypes: ["Tournament", "Auth"],
   endpoints: (builder) => ({
     getAllTournaments: builder.query({
       query: (tournamentCategory) => ({
@@ -20,14 +20,17 @@ export const tournamentApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Tournament"],
+      invalidatesTags: ["Tournament", "Auth"],
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          toast.success(data.message);
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           console.log(error);
-          toast.error(error.error.data.message);
+          toast.error(error.error.data.message, {
+            autoClose: 1500,
+            theme: "colored",
+          });
         }
       },
     }),
@@ -37,13 +40,6 @@ export const tournamentApi = createApi({
         url: "/my-tournaments",
       }),
       providesTags: ["Tournament"],
-      async onQueryStarted(arg, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-        } catch (error) {
-          console.log(error);
-        }
-      },
     }),
 
     getTournamentInfo: builder.query({
@@ -64,7 +60,7 @@ export const tournamentApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          toast.success(data.message);
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           console.log(error);
           toast.error(error.error.data.message, {
@@ -80,11 +76,11 @@ export const tournamentApi = createApi({
         url: `/delete-tournament/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Tournament"],
+      invalidatesTags: ["Tournament", "Auth"],
       onQueryStarted: async (arg, { queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
-          toast.success(data.message);
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           toast.error(error.error.data.message);
         }

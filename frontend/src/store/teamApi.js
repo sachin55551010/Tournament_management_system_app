@@ -12,8 +12,8 @@ export const teamApi = createApi({
   endpoints: (builder) => ({
     // get all teams from specific tournaments
     createTeam: builder.mutation({
-      query: (teamData) => ({
-        url: "/create-team",
+      query: ({ tournamentId, teamData }) => ({
+        url: `/create-team/${tournamentId}`,
         method: "POST",
         body: teamData,
       }),
@@ -21,11 +21,11 @@ export const teamApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          console.log(data);
+          toast.success(data.message, { autoClose: 5000, theme: "colored" });
         } catch (error) {
           console.log("create team error : ", error);
           toast.error(error.error.data.message, {
-            autoClose: 1500,
+            autoClose: 2000,
             theme: "colored",
           });
         }
@@ -84,8 +84,26 @@ export const teamApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          toast.success(data.message);
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
+          toast.error(error.error.data.message);
+        }
+      },
+    }),
+
+    updateTeam: builder.mutation({
+      query: ({ tournamentId, teamId, teamData }) => ({
+        url: `/update-team/${tournamentId}/${teamId}`,
+        method: "PATCH",
+        body: teamData,
+      }),
+      invalidatesTags: ["Team", "Player"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
+        } catch (error) {
+          console.log("Update team error");
           toast.error(error.error.data.message);
         }
       },
@@ -99,4 +117,5 @@ export const {
   useGetTeamPlayersQuery,
   useGetTeamByIdQuery,
   useDeleteTeamMutation,
+  useUpdateTeamMutation,
 } = teamApi;

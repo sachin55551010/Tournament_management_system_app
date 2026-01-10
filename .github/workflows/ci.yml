@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Frontend
+      - name: Install frontend deps
+        working-directory: frontend
+        run: npm install
+
+      - name: Lint frontend
+        working-directory: frontend
+        run: npm run lint
+
+      # Backend
+      - name: Install backend deps
+        working-directory: backend
+        run: npm install
+
+      - name: Lint backend
+        working-directory: backend
+        run: npm run lint

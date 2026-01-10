@@ -48,7 +48,7 @@ export const MyTournamentTeams = () => {
 
           {authUser ? (
             <Link to="create-team">
-              <button className="btn btn-soft btn-info">Create Team</button>
+              <button className="btn btn-soft btn-info">Add Team</button>
             </Link>
           ) : (
             <div className="flex flex-col items-center gap-2">

@@ -1,7 +1,6 @@
 import { MapPin, Share2, Trash2, Users } from "lucide-react";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 export const TeamList = ({ data, tournamentId }) => {
   const navigate = useNavigate();
   const handleTeamClickBtn = (teamId) => {

@@ -34,7 +34,8 @@ export const authApi = createApi({
         const { data } = await queryFulfilled;
         dispatch(clearAuthUser());
         toast.success(data.message, {
-          autoClose: 1000,
+          autoClose: 1500,
+          theme: "colored",
         });
       },
     }),
@@ -51,13 +52,13 @@ export const authApi = createApi({
           const { data } = await queryFulfilled;
           dispatch(setAuthUser(data));
           toast.success(data.message, {
-            autoClose: 1000,
+            autoClose: 1500,
             theme: "colored",
           });
         } catch (error) {
           toast.error(error.error.data.message, {
             theme: "colored",
-            autoClose: 1000,
+            autoClose: 1500,
             hideProgressBar: true,
           });
         }
@@ -74,7 +75,7 @@ export const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
 
-          toast.success(data.message);
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           console.log("remove photo error : ", error);
         }

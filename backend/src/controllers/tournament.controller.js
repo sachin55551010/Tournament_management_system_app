@@ -196,7 +196,7 @@ export const deleteTournament = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "You cannot delete running or completed tournament! contact admin for more help"
+          "You cannot delete ongoing or completed tournament! contact app developer for more help"
         )
       );
 

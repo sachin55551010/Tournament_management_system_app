@@ -409,6 +409,7 @@ export const CreateTournamentPage = ({ mode }) => {
                   className={`btn btn-success w-full rounded-lg ${
                     mode === "edit" && "btn-warning"
                   }`}
+                  disabled={isAdding}
                 >
                   {mode === "create" ? "Create" : "Update"}
                 </button>
@@ -417,6 +418,7 @@ export const CreateTournamentPage = ({ mode }) => {
                     type="button"
                     onClick={() => setIsDeleteModal(true)}
                     className="btn btn-error w-full rounded-lg"
+                    disabled={isUpdating}
                   >
                     Delete
                   </button>

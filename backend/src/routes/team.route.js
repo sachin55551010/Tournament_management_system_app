@@ -12,7 +12,7 @@ import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
 export const team_route = express.Router();
 
-team_route.post("/create-team", isAuthenticated, createTeam);
+team_route.post("/create-team/:tournamentId", isAuthenticated, createTeam);
 
 team_route.get("/my-tournament-teams/:tournamentId", getTeamsByTournament);
 
@@ -22,7 +22,7 @@ team_route.get("/team-players/:teamId", getTeamPlayers);
 
 team_route.get("/get-team/:teamId", getTeamById);
 team_route.patch(
-  "/update-team/:tournamentId/:matchId",
+  "/update-team/:tournamentId/:teamId",
   isAuthenticated,
   updateTeam
 );

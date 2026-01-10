@@ -15,7 +15,7 @@ export const AddTeamPlayer = () => {
   return (
     <div className="min-h-dvh max-h-dvh overflow-y-scroll">
       <Header data={data?.myTeamPlayers.teamName} />
-      <PlayerList data={data} />
+      <PlayerList data={data} teamId={teamId} />
     </div>
   );
 };

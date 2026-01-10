@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useCreateTeamMutation,
   useGetTeamByIdQuery,
+  useUpdateTeamMutation,
 } from "../../store/teamApi";
 import { validateInputs } from "../../utils/validateInputs";
 import { Camera } from "lucide-react";
@@ -15,16 +16,22 @@ export const CreateTeam = ({ mode }) => {
   const { teamId } = useParams();
   const { authUser } = useSelector((state) => state.auth);
 
-  const { data, isLoading: isTeamLoading } = useGetTeamByIdQuery(teamId);
+  const { data, isLoading: isTeamLoading } = useGetTeamByIdQuery(teamId, {
+    skip: !teamId, // if id undefind it will skip it and no error in console log of undefined id
+  });
+
+  const varifyTeamAdmin = authUser?.player?._id === data?.team?.createdBy;
+  const [updateTeam, { isLoading: isUpdating }] = useUpdateTeamMutation();
 
   const checkIsPlayerInTeam = Boolean(
-    data?.team?.teamPlayers?.find((player) => player === authUser?.player?._id)
+    data?.team?.teamPlayers?.find(
+      (elem) => elem.player === authUser?.player?._id
+    )
   );
 
   const navigate = useNavigate();
   const [createTeam, { isLoading }] = useCreateTeamMutation();
   const [teamData, setTeamData] = useState({
-    tournamentId,
     teamLogo: "",
     teamName: "",
     city: "",
@@ -38,10 +45,11 @@ export const CreateTeam = ({ mode }) => {
       setTeamData((prev) => ({
         ...prev,
         teamName: data?.team?.teamName ?? "",
+        teamLogo: data?.team?.teamLogo ?? "",
         city: data?.team?.city ?? "",
         captainNumber: data?.team?.captainNumber ?? "",
         captainName: data?.team?.captainName ?? "",
-        addMe: checkIsPlayerInTeam ?? null,
+        addMe: checkIsPlayerInTeam,
       }));
       setSelectTeamLogo(data?.team?.teamLogo ?? "");
     }
@@ -61,9 +69,19 @@ export const CreateTeam = ({ mode }) => {
   };
 
   const handleSubmitBtn = async (e) => {
-    e.preventDefault();
-    await createTeam(teamData).unwrap();
-    navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+    try {
+      e.preventDefault();
+      if (mode === "edit") {
+        console.log(teamData);
+        await updateTeam({ tournamentId, teamId, teamData }).unwrap();
+        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+      } else {
+        await createTeam({ tournamentId, teamData }).unwrap();
+        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (isTeamLoading) {
@@ -179,10 +197,10 @@ export const CreateTeam = ({ mode }) => {
             />
           </label>
         </div>
+
         <div className="flex w-full mt-6 gap-2">
           <input
-            value={teamData.addMe}
-            checked={checkIsPlayerInTeam}
+            checked={teamData.addMe}
             onChange={(e) =>
               setTeamData((prev) => ({ ...prev, addMe: e.target.checked }))
             }
@@ -193,24 +211,21 @@ export const CreateTeam = ({ mode }) => {
 
         <div className="">
           {mode === "edit" ? (
-            <div className="flex w-full gap-2">
-              <button
-                type="button"
-                className={`flex-1 btn btn-warning w-full rounded-md mt-6`}
-              >
+            <div className="grid grid-cols-1 w-full gap-2 md:grid-cols-2 mt-4">
+              <button className={` btn btn-warning w-full rounded-md`}>
                 Update
               </button>
               <button
                 type="button"
                 onClick={() => setDeleteTeamModalOpen(true)}
-                className={`flex-1 btn btn-error w-full rounded-md mt-6`}
+                className={` btn btn-error w-full rounded-md`}
               >
                 Delete
               </button>
             </div>
           ) : (
             <button
-              className={`btn btn-info w-full rounded-md mt-6`}
+              className={`btn btn-info w-full rounded-md mt-4`}
               disabled={isLoading}
             >
               {isLoading ? <span className="loading"></span> : "Add Team"}

@@ -8,6 +8,7 @@ import {
 } from "../store/tournamentApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { DummyCardLoadingSkelton } from "./ui/DummyLoadingSkelton";
+import { Phone, User } from "lucide-react";
 
 export const AllTournamentList = () => {
   const dispatch = useDispatch();
@@ -95,13 +96,13 @@ export const AllTournamentList = () => {
         <p>No Tournament found</p>
       </div>
 
-      <ul className="grid px-6 py-4 gap-10 md:grid-cols-3">
+      <ul className="grid px-3 py-4 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {data?.allTournaments?.map((tournament) => {
           return (
             <li
               onClick={() => handleGetTournamentInfoBtn(tournament._id)}
               key={tournament._id}
-              className="relative flex flex-col rounded-lg h-50 bg-base-100 cursor-pointer border border-base-content/20 hover:scale-105  transition-all duration-200"
+              className="relative flex flex-col rounded-lg h-55 bg-base-100 cursor-pointer border border-base-content/20 hover:scale-102  transition-all duration-200"
             >
               {/* header */}
               <div className="h-[70%] p-2 flex flex-col justify-around">
@@ -111,12 +112,18 @@ export const AllTournamentList = () => {
 
                 {/* organiser info  */}
                 <div className="flex gap-1 text-[.7rem] text-base-content/70">
-                  <h1>Organiser Name :</h1>
-                  <h2 className="font-bold">{tournament.organiserName}</h2>
+                  <div className="flex items-center gap-1">
+                    <User size={17} />
+                    <h1>Organiser :</h1>
+                    <h2 className="font-bold">{tournament.organiserName}</h2>
+                  </div>
                 </div>
                 <div className="flex gap-1 text-[.7rem] text-base-content/70">
-                  <h1>Contact :</h1>
-                  <h2 className="font-bold">{tournament.phone}</h2>
+                  <div className="flex gap-1 items-center">
+                    <Phone size={17} />
+                    <h1>Contact :</h1>
+                    <h2 className="font-bold">{tournament.phone}</h2>
+                  </div>
                 </div>
 
                 {/* tournaments start and end date  */}
@@ -152,7 +159,7 @@ export const AllTournamentList = () => {
               </div>
 
               {/* footer */}
-              <div className="bg-base-300 flex flex-col gap-2 rounded-b-lg h-[30%] p-2 text-[.7rem]">
+              <div className="bg-base-300/60 flex flex-col gap-2 rounded-b-lg h-[30%] p-2 text-[.7rem]">
                 <div className="flex gap-1 text-base-content/60 font-semibold">
                   <h1 className="">Created :</h1>
                   <span>
@@ -164,15 +171,15 @@ export const AllTournamentList = () => {
                 </div>
 
                 <div className="flex justify-between text-base-content/60 font-semibold">
-                  <div className="flex gap-1 items-center">
+                  <div className="badge badge-soft badge-success flex gap-1 items-center text-[.75rem] font-bold">
                     <h1>City :</h1>
-                    <span className="badge badge-outline badge-success capitalize rounded-md text-[.7rem]">
+                    <span className="capitalize rounded-md">
                       {tournament.city}
                     </span>
                   </div>
-                  <div className="flex gap-1 items-center">
+                  <div className="badge badge-soft badge-success flex gap-1 items-center text-[.75rem] font-bold">
                     <h1>Ground : </h1>
-                    <span className="badge text-[.7rem] badge-outline badge-success capitalize rounded-md">
+                    <span className=" capitalize rounded-md">
                       {tournament.ground}
                     </span>
                   </div>
