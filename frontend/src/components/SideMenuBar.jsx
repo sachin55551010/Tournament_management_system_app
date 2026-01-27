@@ -108,7 +108,7 @@ export const SideMenuBar = () => {
               {authUser?.player?.role === "organiser" && (
                 <li className="p-2 rounded-md hover:bg-base-content/40 transition-all duration-200">
                   <NavLink
-                    to="my-tournament/tournaments"
+                    to="my-tournament"
                     className="flex gap-4 items-center lg:gap-1"
                   >
                     <Target className="lg:size-4 md:hidden" />

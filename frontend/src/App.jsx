@@ -34,6 +34,8 @@ import { AddTeamPlayer } from "./pages/Team/AddTeamPlayer";
 import { JoinTeamPage } from "./pages/Team/JoinTeamPage";
 import { useEffect } from "react";
 import { StartMatch } from "./pages/Match/StartMatch";
+import { TeamInfo } from "./pages/Team/TeamInfo";
+import { TeamInfoPage } from "./pages/Team/TeamInfoPage";
 function App() {
   const { authUser } = useSelector((state) => state.auth);
   const { isLoading } = useCheckAuthUserQuery();
@@ -115,18 +117,7 @@ function App() {
             element={
               authUser?.player?.role === "organiser" && <OrganiserDashBoard />
             }
-          >
-            {/*
-            all nested page inside organiser dashboard
-            * contain organiser tournaments
-            * contain organiser matches
-            * contain organiser teams
-             */}
-            <Route index element={<Navigate to="tournaments" replace />} />
-            <Route path="tournaments" element={<MyTournamentList />} />
-            <Route path="matches" element={<Matches />} />
-            <Route path="teams" element={<Teams />} />
-          </Route>
+          />
 
           {/* my profile page  */}
           <Route path="/profile/:playerId" element={<ProfilePage />} />
@@ -177,26 +168,22 @@ function App() {
            * contain teams info page
            */}
           <Route
-            path="/my-tournament/tournaments/:tournamentId"
+            path="/my-tournament/:tournamentId"
             element={<TournamentInfo />}
           >
+            // create team route
             <Route
               path="tournament-teams/create-team"
               element={authUser && <CreateTeam mode="create" />}
             />
+            //edit team route
             <Route
               path="tournament-teams/update-team/:teamId"
               element={authUser && <CreateTeam mode="edit" />}
             />
             <Route path="tournament-teams" element={<MyTournamentTeams />} />
-            <Route
-              path="tournament-teams/add-players/:teamId"
-              element={<AddTeamPlayer />}
-            />
             <Route index element={<Navigate to="tournament-info" replace />} />
-
             <Route path="tournament-info" element={<MyTournamentInfo />} />
-
             <Route
               path="tournament-matches"
               element={<MyTournamentMatches />}
@@ -209,6 +196,24 @@ function App() {
               path="tournament-matches/schedule"
               element={authUser && <StartMatch mode="schedule" />}
             />
+            {/*
+            team info routes
+            contain team info page
+            contain add team players page
+             */}
+            <Route path="tournament-teams/:teamId" element={<TeamInfo />}>
+              <Route index element={<Navigate to="team-info" replace />} />
+              <Route path="team-info" element={<TeamInfoPage />} />
+              <Route path="add-players" element={<AddTeamPlayer />} />
+              <Route
+                path="team-players"
+                element={<div>Team Players Component</div>}
+              />
+              <Route
+                path="team-info"
+                element={<div>Team Info Component</div>}
+              />
+            </Route>
           </Route>
 
           <Route path="/all-tournaments" element={<AllTournaments />} />

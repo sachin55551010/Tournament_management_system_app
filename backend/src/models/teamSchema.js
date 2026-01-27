@@ -22,16 +22,9 @@ const teamSchema = new mongoose.Schema(
           ref: "Player",
         },
         role: {
-          type: String,
-          enum: [
-            "Batsman",
-            "Bowler",
-            "All Rounder",
-            "Captain",
-            "Vice Captain",
-            "Wicket Keeper",
-          ],
-          default: null,
+          type: [String],
+          enum: ["Captain", "Vice Captain", "Wicket Keeper"],
+          default: [],
         },
       },
     ],
@@ -40,10 +33,10 @@ const teamSchema = new mongoose.Schema(
       required: true,
       maxlength: 20,
     },
-    captainNumber: {
+    adminNumber: {
       type: String,
     },
-    captainName: {
+    adminName: {
       type: String,
       maxlength: 20,
     },

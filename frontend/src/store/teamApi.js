@@ -21,7 +21,7 @@ export const teamApi = createApi({
       async onQueryStarted(arg, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          toast.success(data.message, { autoClose: 5000, theme: "colored" });
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           console.log("create team error : ", error);
           toast.error(error.error.data.message, {
@@ -40,7 +40,7 @@ export const teamApi = createApi({
       providesTags: ["Team"],
       async onCacheEntryAdded(
         tournamentId,
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
       ) {
         try {
           await cacheDataLoaded;
@@ -104,9 +104,40 @@ export const teamApi = createApi({
           toast.success(data.message, { autoClose: 1500, theme: "colored" });
         } catch (error) {
           console.log("Update team error");
+          toast.error(error.error.data.message, {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        }
+      },
+    }),
+
+    // update player role in team
+    updateTeamPlayerRole: builder.mutation({
+      query: ({ teamId, playerId, role }) => ({
+        url: `/update-team-player-role/${teamId}/${playerId}`,
+        method: "PATCH",
+        body: { role },
+      }),
+      invalidatesTags: ["Team", "Player"],
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          toast.success(data.message, { autoClose: 1500, theme: "colored" });
+        } catch (error) {
+          console.log("Update team player role error");
           toast.error(error.error.data.message);
         }
       },
+    }),
+
+    // remove player from team
+    removePlayerFromTeam: builder.mutation({
+      query: ({ tournamentId, teamId, playerId }) => ({
+        url: `/remove-player-from-team/${tournamentId}/${teamId}/${playerId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Player"],
     }),
   }),
 });
@@ -118,4 +149,6 @@ export const {
   useGetTeamByIdQuery,
   useDeleteTeamMutation,
   useUpdateTeamMutation,
+  useUpdateTeamPlayerRoleMutation,
+  useRemovePlayerFromTeamMutation,
 } = teamApi;

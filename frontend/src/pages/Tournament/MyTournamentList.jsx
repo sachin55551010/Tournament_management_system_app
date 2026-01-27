@@ -1,4 +1,4 @@
-import { DummyCardLoadingSkelton } from "../../components/ui/DummyLoadingSkelton";
+import { DummyCardLoadingSkelton } from "../../components/modals/DummyLoadingSkelton";
 import { useGetMyTournamentQuery } from "../../store/tournamentApi";
 import { useNavigate } from "react-router-dom";
 
@@ -8,12 +8,12 @@ export const MyTournamentList = () => {
 
   // function to get tournament information related with tournament id
   const handleOnClickBtn = (tournamentId) => {
-    navigate(`/my-tournament/tournaments/${tournamentId}`);
+    navigate(`/my-tournament/${tournamentId}`);
   };
   //format date
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return (
-    <div className="px-4 pt-28 pb-8 max-h-dvh overflow-y-scroll">
+    <div className="px-4 pt-20 pb-8 max-h-dvh overflow-y-scroll">
       {isLoading ? (
         <DummyCardLoadingSkelton />
       ) : (

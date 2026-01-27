@@ -1,5 +1,5 @@
 import { useGetMyTournamentTeamsQuery } from "../store/matchApi";
-import { DummyCardLoadingSkelton } from "./ui/DummyLoadingSkelton";
+import { DummyCardLoadingSkelton } from "./modals/DummyLoadingSkelton";
 import noData from "../../assets/No data-amico.svg";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
 import { Calendar, MapPin } from "lucide-react";
@@ -10,7 +10,6 @@ export const MatchList = ({ tournamentId }) => {
     return <DummyCardLoadingSkelton />;
   }
   const matches = data?.matches ?? [];
-  console.log(matches);
 
   const statusBg = {
     scheduled: "badge badge-soft badge-warning",

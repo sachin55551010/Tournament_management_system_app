@@ -7,7 +7,7 @@ import {
   useGetAllTournamentsQuery,
 } from "../store/tournamentApi";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DummyCardLoadingSkelton } from "./ui/DummyLoadingSkelton";
+import { DummyCardLoadingSkelton } from "./modals/DummyLoadingSkelton";
 import { Phone, User } from "lucide-react";
 
 export const AllTournamentList = () => {
@@ -71,11 +71,18 @@ export const AllTournamentList = () => {
       socket.off("deletedTournament");
       socket.off("updatedTournament");
     };
-  }, [dispatch]);
+  }, [dispatch, tournamentCategory]);
+
+  const tournamentStatusColor = {
+    Upcoming: "badge-info",
+    Ongoing: "badge-warning",
+    Completed: "badge-success",
+    Cancelled: "badge-warning",
+  };
 
   // get tournament info button
   const handleGetTournamentInfoBtn = (tournamentId) => {
-    navigate(`/my-tournament/tournaments/${tournamentId}`);
+    navigate(`/my-tournament/${tournamentId}`);
   };
   const options = { day: "2-digit", month: "short", year: "numeric" };
   if (isLoading) {
@@ -153,7 +160,11 @@ export const AllTournamentList = () => {
                 </div>
 
                 {/* tournament status  */}
-                <div className="absolute badge badge-soft badge-warning top-4 right-4 font-semibold rounded-md">
+                <div
+                  className={`absolute badge badge-soft ${
+                    tournamentStatusColor[tournament.status]
+                  } top-4 right-4 font-semibold rounded-md`}
+                >
                   {tournament.status}
                 </div>
               </div>

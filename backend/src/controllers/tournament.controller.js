@@ -4,6 +4,7 @@ import { Tournament } from "../models/tournamentSchema.js";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 import { io } from "../utils/socket.js";
 import mongoose from "mongoose";
+import { updateTournamentService } from "../services/updateTournamentStatus.service.js";
 
 //function to create new tournament
 export const addTournament = async (req, res, next) => {
@@ -33,10 +34,13 @@ export const addTournament = async (req, res, next) => {
     )
       return next(new CustomErrHandler(400, "All fields are required"));
 
-    if (startDate > endDate)
-      return next(
-        new CustomErrHandler(400, "Start Date must be before end end")
-      );
+    if (startDate && endDate) {
+      if (startDate > endDate)
+        return next(
+          new CustomErrHandler(400, "Start Date must be before end end")
+        );
+    }
+
     const isTournamentExists = await Tournament.findOne({
       tournamentName,
       ground,
@@ -215,6 +219,7 @@ export const deleteTournament = async (req, res, next) => {
 
 export const getAllTournaments = async (req, res, next) => {
   try {
+    updateTournamentService();
     const { tournamentCategory } = req.params;
 
     const allTournaments = await Tournament.find({ tournamentCategory });

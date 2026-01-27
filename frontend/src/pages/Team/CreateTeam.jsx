@@ -8,7 +8,7 @@ import {
 import { validateInputs } from "../../utils/validateInputs";
 import { Camera } from "lucide-react";
 import { useSelector } from "react-redux";
-import { DeleteTeamConfirmModal } from "../../components/ui/DeleteTeamConfirmModal";
+import { DeleteTeamConfirmModal } from "../../components/modals/DeleteTeamConfirmModal";
 export const CreateTeam = ({ mode }) => {
   const [deleteTeamModalOpen, setDeleteTeamModalOpen] = useState(false);
   const [selectTeamLogo, setSelectTeamLogo] = useState(null);
@@ -20,7 +20,7 @@ export const CreateTeam = ({ mode }) => {
     skip: !teamId, // if id undefind it will skip it and no error in console log of undefined id
   });
 
-  const varifyTeamAdmin = authUser?.player?._id === data?.team?.createdBy;
+  // const varifyTeamAdmin = authUser?.player?._id === data?.team?.createdBy;
   const [updateTeam, { isLoading: isUpdating }] = useUpdateTeamMutation();
 
   const checkIsPlayerInTeam = Boolean(
@@ -35,8 +35,8 @@ export const CreateTeam = ({ mode }) => {
     teamLogo: "",
     teamName: "",
     city: "",
-    captainNumber: "",
-    captainName: "",
+    adminNumber: "",
+    adminName: "",
     addMe: false,
   });
 
@@ -47,13 +47,13 @@ export const CreateTeam = ({ mode }) => {
         teamName: data?.team?.teamName ?? "",
         teamLogo: data?.team?.teamLogo ?? "",
         city: data?.team?.city ?? "",
-        captainNumber: data?.team?.captainNumber ?? "",
-        captainName: data?.team?.captainName ?? "",
+        adminNumber: data?.team?.adminNumber ?? "",
+        adminName: data?.team?.adminName ?? "",
         addMe: checkIsPlayerInTeam,
       }));
       setSelectTeamLogo(data?.team?.teamLogo ?? "");
     }
-  }, [mode, data]);
+  }, [mode, data, checkIsPlayerInTeam]);
 
   //function to upload image
   const uploadLogo = (e) => {
@@ -72,15 +72,16 @@ export const CreateTeam = ({ mode }) => {
     try {
       e.preventDefault();
       if (mode === "edit") {
-        console.log(teamData);
         await updateTeam({ tournamentId, teamId, teamData }).unwrap();
-        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+        navigate(
+          `/my-tournament/${tournamentId}/tournament-teams/${teamId}/team-info`
+        );
       } else {
         await createTeam({ tournamentId, teamData }).unwrap();
-        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+        navigate(`/my-tournament/${tournamentId}/tournament-teams`);
       }
     } catch (error) {
-      console.log(error);
+      console.error("create team error", error);
     }
   };
 
@@ -160,14 +161,14 @@ export const CreateTeam = ({ mode }) => {
             htmlFor="number"
             className="flex flex-col gap-2 text-base-content/50"
           >
-            Team Captain/Coordinator Number (Optional)
+            Admin/Coordinator Number (Optional)
             <input
-              value={teamData.captainNumber}
+              value={teamData.adminNumber}
               onChange={(e) => {
                 const { value } = e.target;
                 const regex = /^[0-9]*$/;
                 if (regex.test(value)) {
-                  setTeamData({ ...teamData, captainNumber: value });
+                  setTeamData({ ...teamData, adminNumber: value });
                 }
               }}
               id="number"
@@ -181,13 +182,13 @@ export const CreateTeam = ({ mode }) => {
             htmlFor="captain-name"
             className="flex flex-col gap-2 text-base-content/50 capitalize"
           >
-            Team Captain Name(Optional)
+            Admin/Coordinator Name(Optional)
             <input
-              value={teamData.captainName}
+              value={teamData.adminName}
               onChange={(e) => {
                 const { value } = e.target;
                 if (validateInputs(value)) {
-                  setTeamData({ ...teamData, captainName: value });
+                  setTeamData({ ...teamData, adminName: value });
                 }
               }}
               id="captain-name"
@@ -212,13 +213,24 @@ export const CreateTeam = ({ mode }) => {
         <div className="">
           {mode === "edit" ? (
             <div className="grid grid-cols-1 w-full gap-2 md:grid-cols-2 mt-4">
-              <button className={` btn btn-warning w-full rounded-md`}>
-                Update
+              <button
+                className={` btn btn-warning w-full rounded-md`}
+                disabled={isUpdating}
+              >
+                {isUpdating ? (
+                  <div className="flex gap-2">
+                    <span>Upading</span>
+                    <span className="loading loading-spinner loading-sm"></span>
+                  </div>
+                ) : (
+                  "Update"
+                )}
               </button>
               <button
                 type="button"
                 onClick={() => setDeleteTeamModalOpen(true)}
-                className={` btn btn-error w-full rounded-md`}
+                className={`btn btn-error w-full rounded-md`}
+                disabled={isUpdating}
               >
                 Delete
               </button>

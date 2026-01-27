@@ -11,7 +11,7 @@ import {
   useUpdateTournamentInfoMutation,
 } from "../../store/tournamentApi";
 import { useNavigate, useParams } from "react-router-dom";
-import { DeleteConfirmModal } from "../../components/ui/DeleteConfirmModal";
+import { DeleteConfirmModal } from "../../components/modals/DeleteConfirmModal";
 import { validateInputs } from "../../utils/validateInputs";
 
 export const CreateTournamentPage = ({ mode }) => {
@@ -25,8 +25,7 @@ export const CreateTournamentPage = ({ mode }) => {
     if (mode === "edit" && data) {
       setTournamentInfo({
         tournamentName: data?.myTournament?.tournamentName,
-        organiserName:
-          data?.myTournament?.ograniserName || authUser?.player?.playerName,
+        organiserName: data?.myTournament?.ograniserName,
         phone: data?.myTournament?.phone,
         city: data?.myTournament?.city,
         ground: data?.myTournament?.ground,
@@ -76,7 +75,8 @@ export const CreateTournamentPage = ({ mode }) => {
 
   // check if user entering ending date before starting date
   const validateDates = () => {
-    if (tournamentInfo.startDate <= tournamentInfo.endDate) {
+    if (!tournamentInfo.startDate || !tournamentInfo.endDate) return true;
+    if (tournamentInfo?.startDate <= tournamentInfo?.endDate) {
       return true;
     } else {
       toast.error("Please enter end date after start date");
@@ -109,7 +109,7 @@ export const CreateTournamentPage = ({ mode }) => {
           updatedFields: tournamentInfo,
         }).unwrap();
 
-        navigate(`/my-tournament/tournaments/${tournamentId}/tournament-info`);
+        navigate(`/my-tournament/${tournamentId}/tournament-info`);
       } else {
         if (
           !tournamentInfo.tournamentName.trim() ||
@@ -128,7 +128,7 @@ export const CreateTournamentPage = ({ mode }) => {
           return;
         } else {
           await addTournament(tournamentInfo).unwrap();
-          navigate("/my-tournament/tournaments");
+          navigate("/my-tournament");
         }
       }
     } catch (error) {

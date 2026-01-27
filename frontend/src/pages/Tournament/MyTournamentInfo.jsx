@@ -16,9 +16,9 @@ export const MyTournamentInfo = () => {
       <div className="w-full md:w-[70%] flex flex-col gap-8">
         {/* organised information  */}
         <div className="border border-base-content/20 rounded-md bg-base-100">
-          <h1 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
+          <h4 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
             Organiser Detail
-          </h1>
+          </h4>
           <div className="flex gap-4 py-6 px-2">
             {/* profile picture  */}
             <div>
@@ -60,7 +60,7 @@ export const MyTournamentInfo = () => {
         ) : (
           <div className="flex flex-col w-full rounded-md border border-base-content/20">
             <div className="py-2 bg-base-300 text-base-content/70 flex justify-between rounded-t-md">
-              <h1 className="pl-2 font-extrabold">Tournament Detail</h1>
+              <h4 className="pl-2 font-extrabold">Tournament Detail</h4>
 
               {/* tournament edit button  */}
               {authUser?.player?._id === data?.myTournament?.createdBy?._id && (
@@ -78,34 +78,51 @@ export const MyTournamentInfo = () => {
 
             <div className="flex flex-col p-2 gap-10 md:grid grid-cols-2">
               <div className="flex flex-col gap-2">
-                <h1 className="text-base-content/60 font-bold">Name</h1>
+                <h4 className="text-base-content/60 font-bold">Name</h4>
                 <span className="capitalize">
                   {data?.myTournament?.tournamentName}
                 </span>
               </div>
 
+              {/* tournaments dates */}
               <div className="flex flex-col gap-2">
-                <h1 className="text-base-content/60 font-bold">Date</h1>
-                <span className="capitalize">
-                  {data?.myTournament?.startDate &&
-                  data?.myTournament?.endDate ? (
-                    <div className="flex gap-2">
-                      <span>
-                        {new Date(
-                          data?.myTournament?.startDate
-                        ).toLocaleDateString("en", options)}
-                      </span>
-                      to
-                      <span>
-                        {new Date(
-                          data?.myTournament?.endDate
-                        ).toLocaleDateString("en", options)}
-                      </span>
-                    </div>
-                  ) : (
-                    <span>Not Mentioned Yet</span>
-                  )}
-                </span>
+                <h4 className="font-bold text-base-content/60">
+                  Tournament Dates
+                </h4>
+                <div className="flex justify-between">
+                  <div className="flex gap-2 items-center">
+                    <h5 className="font-semibold text-base-content/80 text-[.85rem]">
+                      Start Date
+                    </h5>
+                    <span className="text-[.8rem]">
+                      {data?.myTournament?.startDate ? (
+                        <span>
+                          {new Date(
+                            data?.myTournament?.startDate.slice(0, 10)
+                          ).toLocaleString("en", options)}
+                        </span>
+                      ) : (
+                        <span>Not Mentioned</span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <h5 className="font-semibold text-base-content/80 text-[.85rem]">
+                      End Date
+                    </h5>
+                    <span className="text-[.8rem]">
+                      {data?.myTournament?.endDate ? (
+                        <span>
+                          {new Date(
+                            data?.myTournament?.endDate.slice(0, 10)
+                          ).toLocaleString("en", options)}
+                        </span>
+                      ) : (
+                        <span>Not Mentioned</span>
+                      )}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">

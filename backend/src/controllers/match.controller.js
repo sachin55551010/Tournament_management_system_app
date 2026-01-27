@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 import { Match } from "../models/matchSchema.js";
 import { Tournament } from "../models/tournamentSchema.js";
-import { TOURNAMENT_CATEGORY } from "../../../frontend/src/constant/tournamentCategory.js";
+
 export const createMatch = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
@@ -15,12 +15,22 @@ export const createMatch = async (req, res, next) => {
       round,
     } = req.body;
 
+    console.log(firstTeamId, secondTeamId);
+
     if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
       return next(
         new CustomErrHandler(
           404,
-          "no tournament id found or invalid tournament id"
-        )
+          "no tournament id found or invalid tournament id",
+        ),
+      );
+    if (!firstTeamId || !mongoose.Types.ObjectId.isValid(firstTeamId))
+      return next(
+        new CustomErrHandler(404, "no first team id found or invalid team id"),
+      );
+    if (!secondTeamId || !mongoose.Types.ObjectId.isValid(secondTeamId))
+      return next(
+        new CustomErrHandler(404, "no second team id found or invalid team id"),
       );
     const organiserId = await Tournament.findById(tournamentId);
 
@@ -41,8 +51,8 @@ export const createMatch = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           403,
-          `A ${checkRepeatMatch.round} match between ${checkRepeatMatch.firstTeamId.teamName} and ${checkRepeatMatch.secondTeamId.teamName} already played. Please choose a different round or schedule another match.`
-        )
+          `A ${checkRepeatMatch.round} match between ${checkRepeatMatch.firstTeamId.teamName} and ${checkRepeatMatch.secondTeamId.teamName} already played. Please choose a different round or schedule another match.`,
+        ),
       );
     if (
       !firstTeamId?.trim() ||
@@ -89,11 +99,18 @@ export const scheduleMatch = async (req, res, next) => {
       return next(new CustomErrHandler(400, "All fields are required"));
     if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
       return next(new CustomErrHandler(400, "No tournament found"));
-
+    if (!firstTeamId || !mongoose.Types.ObjectId.isValid(firstTeamId))
+      return next(
+        new CustomErrHandler(404, "no first team id found or invalid team id"),
+      );
+    if (!secondTeamId || !mongoose.Types.ObjectId.isValid(secondTeamId))
+      return next(
+        new CustomErrHandler(404, "no second team id found or invalid team id"),
+      );
     const organiserId = await Tournament.findById(tournamentId);
     if (!organiserId.createdBy.equals(req.user.id))
       return next(
-        new CustomErrHandler(403, "Unautherised request Access denied")
+        new CustomErrHandler(403, "Unautherised request Access denied"),
       );
     if (firstTeamId === secondTeamId)
       return next(new CustomErrHandler(400, "Both teams cannot be same"));
@@ -110,8 +127,8 @@ export const scheduleMatch = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           403,
-          `A ${checkIsMatchAlreadyExists.round} match between ${checkIsMatchAlreadyExists.firstTeamId.teamName} and ${checkIsMatchAlreadyExists.secondTeamId.teamName} already schedule. Please choose a different round or schedule another match.`
-        )
+          `A ${checkIsMatchAlreadyExists.round} match between ${checkIsMatchAlreadyExists.firstTeamId.teamName} and ${checkIsMatchAlreadyExists.secondTeamId.teamName} already schedule. Please choose a different round or schedule another match.`,
+        ),
       );
     const match = await Match.create({
       tournamentId,

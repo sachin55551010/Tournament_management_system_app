@@ -10,17 +10,16 @@ import { Match } from "../models/matchSchema.js";
 export const createTeam = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
-    let { teamName, teamLogo, city, captainNumber, captainName, addMe } =
-      req.body;
+    let { teamName, teamLogo, city, adminNumber, adminName, addMe } = req.body;
 
     if (!req.user.id)
       return next(
-        new CustomErrHandler(401, "You are not allowed to perform this action")
+        new CustomErrHandler(401, "You are not allowed to perform this action"),
       );
 
     if (!tournamentId)
       return next(
-        new CustomErrHandler(404, "No tournament found or invalid tournament")
+        new CustomErrHandler(404, "No tournament found or invalid tournament"),
       );
 
     if (!teamName?.trim() || !city?.trim())
@@ -36,8 +35,8 @@ export const createTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           409,
-          "Team is already exist in this tournament. please choose different name"
-        )
+          "Team is already exist in this tournament. please choose different name",
+        ),
       );
 
     // updating team logo
@@ -49,17 +48,17 @@ export const createTeam = async (req, res, next) => {
     }
 
     //checking is player in a team or not
-    const checkDuplicatePlayerInOtherTeam = await Team.findOne({
+    const checkDuplicatePlayerInOtherTeam = await Team.exists({
       tournamentId,
-      teamPlayers: { playerId: req.user.id },
+      "teamPlayers.player": req.user.id,
     });
 
     if (addMe && checkDuplicatePlayerInOtherTeam)
       return next(
         new CustomErrHandler(
           409,
-          "You are already registered with another team in this tournament. Please leave that team before joining a new one."
-        )
+          "You are already registered with another team in this tournament. Please leave that team before joining a new one.",
+        ),
       );
 
     const team = await Team.create({
@@ -67,8 +66,8 @@ export const createTeam = async (req, res, next) => {
       teamName: teamName.toLowerCase(),
       city,
       teamLogo: teamLogo,
-      captainNumber: captainNumber || "",
-      captainName: captainName || "",
+      adminNumber: adminNumber || "",
+      adminName: adminName || "",
       createdBy: req.user.id,
     });
 
@@ -96,11 +95,11 @@ export const getTeamsByTournament = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           404,
-          "no tournament found or invalid tournament id"
-        )
+          "no tournament found or invalid tournament id",
+        ),
       );
     const myTournamentTeams = await Team.find({ tournamentId }).populate(
-      "teamPlayers"
+      "teamPlayers",
     );
 
     const countTeams = await Team.countDocuments({ tournamentId });
@@ -134,16 +133,14 @@ export const getTeamPlayers = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "No Team found with this id or team is removed!"
-        )
+          "No Team found with this id or team is removed!",
+        ),
       );
 
     const myTeamPlayers = await Team.findById(teamId)
       .select("teamPlayers")
       .populate("teamPlayers.player")
       .lean();
-
-    // console.log(myTeamPlayers);
 
     if (!myTeamPlayers) return next(new CustomErrHandler(404, "team found"));
 
@@ -175,8 +172,7 @@ export const getTeamById = async (req, res, next) => {
 export const updateTeam = async (req, res, next) => {
   try {
     const { tournamentId, teamId } = req.params;
-    let { teamName, city, teamLogo, captainName, captainNumber, addMe } =
-      req.body;
+    let { teamName, city, teamLogo, adminName, adminNumber, addMe } = req.body;
 
     // check team name or city name should not be empty
     if (!teamName?.trim() || !city?.trim())
@@ -185,12 +181,12 @@ export const updateTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "No tournament found or invalid tournament id"
-        )
+          "No tournament found or invalid tournament id",
+        ),
       );
     if (!teamId || !mongoose.Types.ObjectId.isValid(teamId))
       return next(
-        new CustomErrHandler(400, "No team found or invalid team id")
+        new CustomErrHandler(400, "No team found or invalid team id"),
       );
 
     const team = await Team.findById(teamId);
@@ -201,7 +197,7 @@ export const updateTeam = async (req, res, next) => {
       !tournament.createdBy.equals(req.user.id)
     )
       return next(
-        new CustomErrHandler(400, "Unatherized request. Access denied!")
+        new CustomErrHandler(400, "Unatherized request. Access denied!"),
       );
 
     const findDuplicateTeam = await Team.findOne({
@@ -215,8 +211,8 @@ export const updateTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           409,
-          "Team is already exist in this tournament. please choose different name"
-        )
+          "Team is already exist in this tournament. please choose different name",
+        ),
       );
 
     // check if team played any match in the tournament
@@ -233,13 +229,13 @@ export const updateTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           403,
-          "You don't have permission to edit this team. Please contact the tournament organiser to update the team details."
-        )
+          "You don't have permission to edit this team. Please contact the tournament organiser to update the team details.",
+        ),
       );
 
-    const checkDuplicatePlayerInOtherTeam = await Team.findOne({
+    const checkDuplicatePlayerInOtherTeam = await Team.exists({
       tournamentId,
-      teamPlayers: { player: req.user.id },
+      "teamPlayers.player": req.user.id,
       _id: { $ne: teamId },
     });
 
@@ -253,8 +249,8 @@ export const updateTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           409,
-          "You are already registered with another team in this tournament. Please leave that team before joining a new one."
-        )
+          "You are already registered with another team in this tournament. Please leave that team before joining a new one.",
+        ),
       );
 
     if (req.body.teamLogo && req.body.teamLogo.startsWith("data:image")) {
@@ -270,9 +266,9 @@ export const updateTeam = async (req, res, next) => {
         teamLogo: teamLogo,
         teamName,
         city,
-        captainName: captainName || "",
-        captainNumber: captainNumber || "",
-      }
+        adminName: adminName || "",
+        adminNumber: adminNumber || "",
+      },
     );
 
     if (addMe && !checkDuplicatePlayerInSameTeam) {
@@ -299,11 +295,11 @@ export const deleteTeam = async (req, res, next) => {
     const { tournamentId, teamId } = req.params;
     if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
       return next(
-        new CustomErrHandler(404, "No tourament found or invalid id")
+        new CustomErrHandler(404, "No tourament found or invalid id"),
       );
     if (!teamId || !mongoose.Types.ObjectId.isValid(teamId))
       return next(
-        new CustomErrHandler(404, "No team found or invalid team id")
+        new CustomErrHandler(404, "No team found or invalid team id"),
       );
     const teamAdminId = await Team.findById(teamId);
     const tournamentAdminId = await Tournament.findById(tournamentId);
@@ -313,7 +309,7 @@ export const deleteTeam = async (req, res, next) => {
       !tournamentAdminId.createdBy.equals(req.user.id)
     )
       return next(
-        new CustomErrHandler(400, "Unatherized request. Access denied")
+        new CustomErrHandler(400, "Unatherized request. Access denied"),
       );
 
     const isAlreadyMatchPlayed = await Match.findOne({
@@ -325,8 +321,8 @@ export const deleteTeam = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "You can't remove this team because it has already played at least one match in this tournament."
-        )
+          "You can't remove this team because it has already played at least one match in this tournament.",
+        ),
       );
     await Team.findByIdAndDelete(teamId);
 
@@ -335,6 +331,117 @@ export const deleteTeam = async (req, res, next) => {
       .json({ message: "Team deleted successfully", success: true });
   } catch (error) {
     console.log("Delete team error", error);
+    next(error);
+  }
+};
+
+export const updateTeamPlayerRole = async (req, res, next) => {
+  try {
+    const { teamId, playerId } = req.params;
+    const { role } = req.body;
+
+    if (!teamId || !mongoose.Types.ObjectId.isValid(teamId))
+      return next(new CustomErrHandler(400, "Invalid team id"));
+
+    if (!playerId || !mongoose.Types.ObjectId.isValid(playerId))
+      return next(new CustomErrHandler(400, "Invalid player id"));
+
+    if (!role) return next(new CustomErrHandler(400, "Role is required"));
+
+    // Validate role is an array
+    if (!Array.isArray(role))
+      return next(new CustomErrHandler(400, "Role must be an array"));
+
+    // Check for conflicting roles (can't be both Captain and Vice Captain)
+    if (role.includes("Captain") && role.includes("Vice Captain"))
+      return next(
+        new CustomErrHandler(
+          400,
+          "Player cannot be both Captain and Vice Captain",
+        ),
+      );
+
+    const team = await Team.findById(teamId);
+    if (!team) return next(new CustomErrHandler(404, "No team found"));
+
+    // Find selected player inside team
+    const selectedPlayer = team.teamPlayers.find((p) =>
+      p.player.equals(playerId),
+    );
+
+    if (!selectedPlayer)
+      return next(new CustomErrHandler(404, "Player not found in team"));
+
+    // Handle Captain role - remove from other players if assigning
+    if (role.includes("Captain")) {
+      team.teamPlayers.forEach((p) => {
+        if (!p.player.equals(playerId)) {
+          p.role.pull("Captain");
+        }
+      });
+    }
+
+    // Handle Vice Captain role - remove from other players if assigning
+    if (role.includes("Vice Captain")) {
+      team.teamPlayers.forEach((p) => {
+        if (!p.player.equals(playerId)) {
+          p.role.pull("Vice Captain");
+        }
+      });
+    }
+
+    // Update the selected player's role
+
+    selectedPlayer.role = role;
+
+    // Save the updated team
+    await team.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Role updated successfully",
+      data: {
+        player: selectedPlayer,
+      },
+    });
+  } catch (error) {
+    console.log("update team player role error:", error);
+    next(error);
+  }
+};
+
+export const removePlayerFromTeam = async (req, res, next) => {
+  try {
+    const { tournamentId, teamId, playerId } = req.params;
+
+    if (!teamId || !mongoose.Types.ObjectId.isValid(teamId))
+      return next(new CustomErrHandler(400, "Invalid team id"));
+    if (!playerId || !mongoose.Types.ObjectId.isValid(playerId))
+      return next(new CustomErrHandler(400, "Invalid player id"));
+
+    const organiserId =
+      await Tournament.findById(tournamentId).select("createdBy");
+
+    if (!organiserId || !mongoose.Types.ObjectId.isValid(organiserId))
+      return next(new CustomErrHandler(400, "Invalid tournament id"));
+
+    if (!organiserId.createdBy.equals(req.user.id) || req.user.id === playerId)
+      return next(
+        new CustomErrHandler(
+          400,
+          "You are not authorized to remove this player",
+        ),
+      );
+    await Team.findByIdAndUpdate(teamId, {
+      $pull: { teamPlayers: { player: playerId } },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Player removed from team successfully",
+    });
+  } catch (error) {
+    console.log("remove player from team error : ", error);
     next(error);
   }
 };

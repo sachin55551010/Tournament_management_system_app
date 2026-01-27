@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom";
 export const TeamList = ({ data, tournamentId }) => {
   const navigate = useNavigate();
   const handleTeamClickBtn = (teamId) => {
-    navigate(
-      `/my-tournament/tournaments/${tournamentId}/tournament-teams/add-players/${teamId}`
-    );
+    navigate(`/my-tournament/${tournamentId}/tournament-teams/${teamId}`);
   };
 
   const handleDeleteBtn = () => {

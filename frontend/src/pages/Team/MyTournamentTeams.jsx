@@ -3,7 +3,7 @@ import noData from "../../../assets/undraw_no-data.svg";
 import { useSelector } from "react-redux";
 import { useGetTeamsByTournamentQuery } from "../../store/teamApi";
 import { TeamList } from "../../components/TeamList";
-import { DummyListLoadingSkelton } from "../../components/ui/DummyLoadingSkelton";
+import { DummyListLoadingSkelton } from "../../components/modals/DummyLoadingSkelton";
 export const MyTournamentTeams = () => {
   const { tournamentId } = useParams();
 

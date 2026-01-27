@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useGetTournamentInfoQuery } from "../store/tournamentApi";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { DummyListLoadingSkelton } from "./ui/DummyLoadingSkelton";
+import { DummyListLoadingSkelton } from "./modals/DummyLoadingSkelton";
 import noData from "../../assets/No data-amico.svg";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
 import bat from "../../assets/batsman.svg";
@@ -11,9 +11,12 @@ import { useState } from "react";
 import { GenerateInviteLinkModal } from "./GenerateInviteLinkModal";
 import { useCreateInviteLinkMutation } from "../store/inviteTeamLinkApi";
 import { useGetTeamByIdQuery, useGetTeamPlayersQuery } from "../store/teamApi";
+import { ChangeRoleModal } from "./modals/ChangeRoleModal";
 
 export const PlayerList = ({ data, teamId }) => {
   const [addPlayerModal, setAddPlayerModal] = useState(false);
+  const [changeRoleModal, setChangeRoleModal] = useState(false);
+  const [selectPlayerId, setSelectPlayerId] = useState(null);
   const { tournamentId } = useParams();
   const navigate = useNavigate();
   const { authUser } = useSelector((state) => state.auth);
@@ -30,8 +33,9 @@ export const PlayerList = ({ data, teamId }) => {
     createInviteLink,
     { data: inviteLinkUrl, isLoading: inviteLinkLoading },
   ] = useCreateInviteLinkMutation();
+
   // add player button function
-  function handleAddPlayerBtn() {
+  function invitePlayerBtn() {
     setAddPlayerModal(true);
     createInviteLink({ tournamentId, teamId }).unwrap();
   }
@@ -48,15 +52,35 @@ export const PlayerList = ({ data, teamId }) => {
   const canAddPlayers =
     loggedInUserId === tournamentOrganiserId || loggedInUserId === teamAdminId;
 
+  const isTeamAdmin = loggedInUserId === teamAdminId;
   const handleEditBtn = () => {
     navigate(
-      `/my-tournament/tournaments/${tournamentId}/tournament-teams/update-team/${teamId}`
+      `/my-tournament/${tournamentId}/tournament-teams/update-team/${teamId}`,
     );
+  };
+
+  const roleStyle = {
+    Captain: {
+      className: "badge badge-soft badge-success",
+      label: "C",
+    },
+    "Vice Captain": {
+      className: "badge badge-soft badge-info",
+      label: "VC",
+    },
+    "Wicket Keeper": {
+      className: "badge badge-soft badge-warning",
+      label: "WK",
+    },
   };
 
   //handle button when click on player
   const handlePlayerClickBtn = (playerId) => {
-    console.log(playerId);
+    if (isTeamAdmin) {
+      setSelectPlayerId(playerId);
+
+      setChangeRoleModal(true);
+    } else navigate(`/profile/${playerId}`);
   };
   // dummy data loading screen while data loading from db
   if (isLoading) {
@@ -86,7 +110,7 @@ export const PlayerList = ({ data, teamId }) => {
                   </p>
                 </div>
                 {canAddPlayers && (
-                  <button onClick={handleAddPlayerBtn} className="btn btn-info">
+                  <button onClick={invitePlayerBtn} className="btn btn-info">
                     Invite
                   </button>
                 )}
@@ -128,37 +152,58 @@ export const PlayerList = ({ data, teamId }) => {
             <h1 className="italic">No players found!</h1>
           </div>
         ) : (
-          <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ul className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
             {playerList.map((teamPlayer) => {
               return (
                 <button
                   onClick={() => handlePlayerClickBtn(teamPlayer.player._id)}
                   key={teamPlayer.player._id}
-                  className="border border-base-content/20 p-2 rounded-md flex gap-1 hover:cursor-pointer"
+                  className="border border-base-content/20 p-2 rounded-md flex flex-col gap-1 hover:cursor-pointer"
                 >
-                  {/* player profile image */}
-                  <div className="h-14 w-14">
-                    {teamPlayers?.player?.profilePicture === "" ? (
-                      <div className="bg-accent h-full w-full rounded-full flex items-center justify-center font-bold text-xl">
-                        {defaultAvatar(teamPlayer?.player?.playerName)}
+                  <div className="flex items-center">
+                    <div className="flex w-full gap-2">
+                      {/* player profile image */}
+                      <div className="h-14 w-14">
+                        {teamPlayer?.player?.profilePicture === "" ? (
+                          <div className="bg-accent h-full w-full rounded-full flex items-center justify-center font-bold text-xl">
+                            {defaultAvatar(teamPlayer?.player?.playerName)}
+                          </div>
+                        ) : (
+                          <img
+                            src={teamPlayer?.player?.profilePicture}
+                            alt="img"
+                            className="h-full w-full object-cover rounded-full"
+                          />
+                        )}
                       </div>
-                    ) : (
-                      <img
-                        src={teamPlayer?.player?.profilePicture}
-                        alt=""
-                        className="h-full w-full object-cover rounded-full"
-                      />
-                    )}
-                  </div>
 
-                  {/* player detail */}
-                  <section className="flex-1 flex flex-col justify-evenly">
-                    {/* player name and verification tag */}
-                    <section className="flex justify-between items-center">
-                      <h1 className="font-bold">
-                        {teamPlayer?.player?.playerName}
-                      </h1>
+                      {/* player name and role section */}
+                      <section className="flex justify-between items-center">
+                        <h1 className="font-bold">
+                          {teamPlayer?.player?.playerName}
+                        </h1>
 
+                        {/* role badge */}
+                        <div className="flex ml-2 gap-2 text-[.7rem]">
+                          {teamPlayer?.role?.map((role) => {
+                            const style = roleStyle[role];
+                            if (!style) return null;
+
+                            return (
+                              <span
+                                key={role}
+                                className={`${style.className} text-[.7rem] font-bold h-6`}
+                              >
+                                {style.label}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </section>
+                    </div>
+
+                    {/* varified badge */}
+                    {/* <div>
                       {teamPlayer?.player?.isVarified && (
                         <span className="flex items-center gap-1">
                           <BadgeCheck
@@ -168,30 +213,31 @@ export const PlayerList = ({ data, teamId }) => {
                           <h1 className="font-bold text-[.7rem]">Verified</h1>
                         </span>
                       )}
-                    </section>
+                    </div> */}
+                  </div>
 
-                    <section className="flex items-center justify-between gap-1">
-                      <div className="flex items-center">
-                        <img src={bat} alt="" className="h-4 w-auto" />
-                        <h1 className="capitalize text-[.65rem] text-base-content/70">
-                          {teamPlayer?.player?.battingStyle || "_"}
-                        </h1>
-                      </div>
+                  {/* player styles section */}
+                  <section className="flex items-center justify-between gap-1">
+                    <div className="flex items-center">
+                      <img src={bat} alt="" className="h-4 w-auto" />
+                      <h1 className="capitalize text-[.65rem] text-base-content/70">
+                        {teamPlayer?.player?.battingStyle || "_"}
+                      </h1>
+                    </div>
 
-                      <div className="flex items-center">
-                        <img src={ball} alt="" className="h-3 w-auto" />
-                        <h1 className="capitalize text-[.65rem] text-base-content/70">
-                          {teamPlayer?.player?.bowlingStyle || "_"}
-                        </h1>
-                      </div>
+                    <div className="flex items-center">
+                      <img src={ball} alt="" className="h-3 w-auto" />
+                      <h1 className="capitalize text-[.65rem] text-base-content/70">
+                        {teamPlayer?.player?.bowlingStyle || "_"}
+                      </h1>
+                    </div>
 
-                      <div className="flex items-center">
-                        <UserRound size={17} />
-                        <h1 className="capitalize text-[.65rem] text-base-content/70">
-                          {teamPlayer?.player?.playingRole || "_"}
-                        </h1>
-                      </div>
-                    </section>
+                    <div className="flex items-center">
+                      <UserRound size={17} />
+                      <h1 className="capitalize text-[.65rem] text-base-content/70">
+                        {teamPlayer?.player?.playingRole || "_"}
+                      </h1>
+                    </div>
                   </section>
                 </button>
               );
@@ -206,6 +252,15 @@ export const PlayerList = ({ data, teamId }) => {
           inviteLinkLoading={inviteLinkLoading}
           inviteLinkUrl={inviteLinkUrl}
           data={data}
+        />
+      )}
+      {changeRoleModal && (
+        <ChangeRoleModal
+          setChangeRoleModal={setChangeRoleModal}
+          teamId={teamId}
+          selectPlayerId={selectPlayerId}
+          tournamentId={tournamentId}
+          teamPlayers={teamPlayers}
         />
       )}
     </div>

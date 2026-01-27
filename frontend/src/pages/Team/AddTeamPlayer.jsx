@@ -1,7 +1,10 @@
 import { useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
-import { useGetTeamPlayersQuery } from "../../store/teamApi";
-import { DummyListLoadingSkelton } from "../../components/ui/DummyLoadingSkelton";
+import {
+  useGetTeamByIdQuery,
+  useGetTeamPlayersQuery,
+} from "../../store/teamApi";
+import { DummyListLoadingSkelton } from "../../components/modals/DummyLoadingSkelton";
 import { PlayerList } from "../../components/PlayerList";
 
 export const AddTeamPlayer = () => {
@@ -14,7 +17,6 @@ export const AddTeamPlayer = () => {
 
   return (
     <div className="min-h-dvh max-h-dvh overflow-y-scroll">
-      <Header data={data?.myTeamPlayers.teamName} />
       <PlayerList data={data} teamId={teamId} />
     </div>
   );

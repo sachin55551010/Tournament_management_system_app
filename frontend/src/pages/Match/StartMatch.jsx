@@ -4,7 +4,7 @@ import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
 import accessDenied from "../../../assets/unautherised.svg";
 import { useState } from "react";
 import { useGetTeamsByTournamentQuery } from "../../store/teamApi";
-import { TeamSelectModal } from "../../components/ui/TeamSelectModal";
+import { TeamSelectModal } from "../../components/modals/TeamSelectModal";
 import { ROUND } from "../../constant/matchRound";
 import { toast } from "react-toastify";
 import {
@@ -101,7 +101,7 @@ export const StartMatch = ({ mode }) => {
       }
       if (mode === "schedule") {
         const matchFields = Object.fromEntries(
-          Object.entries(matchData).filter(([key, val]) => val !== "")
+          Object.entries(matchData).filter(([, val]) => val !== "")
         );
 
         await scheduleMatch({ data: matchFields, tournamentId }).unwrap();
@@ -203,7 +203,7 @@ export const StartMatch = ({ mode }) => {
             <div className="flex justify-between w-full mt-4 items-center p-3 rounded-md shadow-[0px_0px_2px_rgba(0,0,0,.4)]">
               <p className="font-bold text-sm">Team not found in tournament?</p>
               <Link
-                to={`/my-tournament/tournaments/${tournamentId}/tournament-teams/create-team`}
+                to={`/my-tournament/${tournamentId}/tournament-teams/create-team`}
                 className="btn btn-info"
               >
                 <button type="button">Add Team</button>
@@ -346,8 +346,27 @@ export const StartMatch = ({ mode }) => {
               </div>
             )}
 
-            <button className="btn btn-info w-full">
-              {mode === "start" ? "Start" : "Schedule"}
+            <button
+              className="btn btn-info w-full"
+              disabled={isScheduleMatchLoading || isStartMatchLoading}
+            >
+              {mode === "start" ? (
+                isStartMatchLoading ? (
+                  <div>
+                    <span>Starting</span>
+                    <span className="loading loading-spinner loading-sm"></span>
+                  </div>
+                ) : (
+                  "Start"
+                )
+              ) : isScheduleMatchLoading ? (
+                <div>
+                  <span>Scheduling</span>
+                  <span className="loading loading-spinner loading-sm"></span>
+                </div>
+              ) : (
+                "Schedule"
+              )}
             </button>
           </form>
         </div>

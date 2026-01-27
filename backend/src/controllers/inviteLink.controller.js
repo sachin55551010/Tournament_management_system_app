@@ -41,7 +41,7 @@ export const createInviteLink = async (req, res, next) => {
 };
 
 // function to validate link
-// check token validation and expire link 
+// check token validation and expire link
 export const validateInviteLink = async (req, res, next) => {
   try {
     const { token } = req.params;
@@ -51,9 +51,9 @@ export const validateInviteLink = async (req, res, next) => {
 
     if (!inviteLink) return next(new CustomErrHandler(400, "link not found"));
 
-    const isPlayerAlreadyExists = await Team.findOne({
+    const isPlayerAlreadyExists = await Team.exists({
       tournamentId: inviteLink.tournamentId,
-      teamPlayers: req.user.id,
+      "teamPlayers.player": req.user.id,
     });
 
     if (isPlayerAlreadyExists) {
@@ -61,14 +61,14 @@ export const validateInviteLink = async (req, res, next) => {
         return next(new CustomErrHandler(400, "You are already in this team"));
       } else {
         return next(
-          new CustomErrHandler(400, "You are already in a different team")
+          new CustomErrHandler(400, "You are already in a different team"),
         );
       }
     }
 
     await Team.updateOne(
       { _id: inviteLink.teamId },
-      { $push: { teamPlayers: req.user.id } }
+      { $push: { teamPlayers: { player: req.user.id } } },
     );
 
     return res.status(201).json({
@@ -92,7 +92,7 @@ export const getInviteData = async (req, res, next) => {
       .populate("teamId", "teamName teamPlayers")
       .populate(
         "tournamentId",
-        "tournamentName organiserName city ground startDate endDate"
+        "tournamentName organiserName city ground startDate endDate",
       )
       .populate("createdBy", "playerName profilePicture ");
 

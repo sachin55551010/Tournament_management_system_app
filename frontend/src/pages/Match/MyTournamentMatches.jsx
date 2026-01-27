@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
 import { useState } from "react";
-import { ChooseMatchActionModal } from "../../components/ui/ChooseMatchActionModal";
+import { ChooseMatchActionModal } from "../../components/modals/ChooseMatchActionModal";
 import { MatchList } from "../../components/MatchList";
 export const MyTournamentMatches = () => {
   const [isMatchActionModal, setIsMatchActionModal] = useState(false);

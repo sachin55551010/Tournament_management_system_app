@@ -71,7 +71,7 @@ export const ProfilePage = () => {
       label: "Date Of Birth",
       value: new Date(dateOfBirth?.slice(0, 10)).toLocaleDateString(
         "en",
-        options
+        options,
       ),
     },
   ];
@@ -92,24 +92,24 @@ export const ProfilePage = () => {
         }`}
       >
         {/* top gradient div */}
-        <section className="relative w-full flex-shrink-0 h-85 md:w-[95%] lg:w-[85%] shadow-[0px_0px_10px_rgba(0,0,0,.4)] rounded-xl">
+        <section className="relative w-full flex-shrink-0 h-85 md:w-[95%] lg:w-[85%] shadow-[0px_0px_10px_rgba(0,0,0,.4)] rounded-xl border border-base-content/20">
           {/* gredient div */}
           <div className="h-[40%] bg-gradient-to-br from-primary to-secondary rounded-t-xl"></div>
 
           {/* display user image */}
           <div
             onClick={() => dispatch(setPicturePopup(true))}
-            className="absolute hover:cursor-pointer top-[20%] left-1/2 -translate-x-1/2 bg-red-400 rounded-full h-30 w-30 border-2 border-white md:left-[15%]"
+            className="absolute hover:cursor-pointer top-[20%] left-1/2 -translate-x-1/2 rounded-full h-30 w-30 border border-base-content/80 md:left-[15%]"
           >
             {profilePicture === "" ? (
-              <div className="rounded-full h-[100%] w-[100%] border-1 flex items-center justify-center bg-primary">
-                <div className="text-4xl font-black">
+              <div className="rounded-full h-[100%] w-[100%] border-1 flex items-center justify-center bg-primary shadow-[0px_0px_20px_rgba(0,0,0,1)]">
+                <div className="text-4xl font-extrabold">
                   {defaultAvatar(playerName)}
                 </div>
               </div>
             ) : (
               <img
-                className="rounded-full h-[100%] w-[100%] object-cover"
+                className="rounded-full h-[100%] w-[100%] object-cover shadow-[0px_0px_20px_rgba(0,0,0,1)]"
                 src={profilePicture}
                 alt="img"
               />
@@ -164,16 +164,19 @@ export const ProfilePage = () => {
             })}
           </ul>
 
-          <div className="grid gap-2 md:grid-cols-2">
+          <div className="flex flex-col md:flex-row gap-4 justify-end">
             <Link
               to={`/profile/career-stats/${playerId}`}
-              className="btn btn-info"
+              className="md:flex-1 btn btn-info"
             >
               Career Stats
             </Link>
 
             {authUser?.player?._id === data?.playerProfile?._id && (
-              <button onClick={handleLogoutBtn} className="btn btn-error">
+              <button
+                onClick={handleLogoutBtn}
+                className="md:flex-1 btn btn-error"
+              >
                 Log Out
               </button>
             )}

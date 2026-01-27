@@ -11,7 +11,7 @@ export const DeleteTeamConfirmModal = ({
   const navigate = useNavigate();
   const handleTeamDeleteBtn = async () => {
     await deleteTeam({ tournamentId, teamId }).unwrap();
-    navigate(`/my-tournament/tournaments/${tournamentId}/tournament-teams`);
+    navigate(`/my-tournament/${tournamentId}/tournament-teams`);
   };
 
   return (

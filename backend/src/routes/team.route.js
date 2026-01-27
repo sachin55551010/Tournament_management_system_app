@@ -7,6 +7,8 @@ import {
   getTeamPlayers,
   getTeamsByTournament,
   updateTeam,
+  updateTeamPlayerRole,
+  removePlayerFromTeam,
 } from "../controllers/team.controller.js";
 import { isAuthenticated } from "../middlewares/isAuthenticated.js";
 
@@ -24,10 +26,22 @@ team_route.get("/get-team/:teamId", getTeamById);
 team_route.patch(
   "/update-team/:tournamentId/:teamId",
   isAuthenticated,
-  updateTeam
+  updateTeam,
 );
 team_route.delete(
   "/delete-team/:tournamentId/:teamId",
   isAuthenticated,
-  deleteTeam
+  deleteTeam,
+);
+
+team_route.patch(
+  "/update-team-player-role/:teamId/:playerId",
+  isAuthenticated,
+  updateTeamPlayerRole,
+);
+
+team_route.delete(
+  "/remove-player-from-team/:tournamentId/:teamId/:playerId",
+  isAuthenticated,
+  removePlayerFromTeam,
 );

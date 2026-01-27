@@ -32,9 +32,7 @@ export const JoinTeamPage = () => {
   const handleJoinTeamBtn = async () => {
     try {
       await joinTeamLink(token).unwrap();
-      navigate(
-        `/my-tournament/tournaments/${data?.tournamentId?._id}/tournament-teams/add-players/${data?.teamId?._id}`
-      );
+      navigate(`/my-tournament/${data?.tournamentId?._id}/tournament-teams`);
     } catch (error) {
       console.log(error);
     }
