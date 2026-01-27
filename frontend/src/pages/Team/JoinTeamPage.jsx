@@ -120,7 +120,7 @@ export const JoinTeamPage = () => {
                     {data?.tournamentId?.startDate ? (
                       <h4 className="text-sm">
                         {new Date(
-                          data?.tournamentId?.startDate
+                          data?.tournamentId?.startDate,
                         ).toLocaleDateString("en", options)}
                       </h4>
                     ) : (
@@ -135,7 +135,7 @@ export const JoinTeamPage = () => {
                     {data?.tournamentId?.endDate ? (
                       <h4 className="text-sm">
                         {new Date(
-                          data?.tournamentId?.endDate
+                          data?.tournamentId?.endDate,
                         ).toLocaleDateString("en", options)}
                       </h4>
                     ) : (
@@ -174,11 +174,16 @@ export const JoinTeamPage = () => {
                   <button
                     onClick={handleJoinTeamBtn}
                     className="btn btn-info flex-1"
+                    disabled={isLoading}
                   >
-                    Join Team
+                    {isLoading ? (
+                      <span className="loading loading-dots loading-xl"></span>
+                    ) : (
+                      "Join Team"
+                    )}
                   </button>
                   <Link className="btn btn-error flex-1" to="/">
-                    <button>Decline</button>
+                    <button disabled={isLoading}>Decline</button>
                   </Link>
                 </div>
               )}
@@ -189,7 +194,3 @@ export const JoinTeamPage = () => {
     </div>
   );
 };
-
-// http://localhost:5173/my-tournament/692eddf60ba34a407298ee3d/tournament-teams/add-players/693a70af80b30633906063c5
-
-// http://localhost:5173/my-tournament/tournaments/692eddf60ba34a407298ee3d/tournament-teams/add-players/693a70af80b30633906063c5

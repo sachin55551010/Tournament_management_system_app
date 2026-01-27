@@ -29,8 +29,8 @@ export const AllTournamentList = () => {
           (draft) => {
             draft.allTournaments.unshift(newTournament);
             console.log("Updated tournaments:", draft.allTournaments);
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -41,10 +41,10 @@ export const AllTournamentList = () => {
           tournamentCategory,
           (draft) => {
             draft.allTournaments = draft.allTournaments.filter(
-              (t) => t._id !== deletedId
+              (t) => t._id !== deletedId,
             );
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -55,14 +55,14 @@ export const AllTournamentList = () => {
           tournamentCategory,
           (draft) => {
             const index = draft.allTournaments.findIndex(
-              (t) => t._id === updatedTournament._id
+              (t) => t._id === updatedTournament._id,
             );
 
             if (index !== -1) {
               draft.allTournaments[index] = updatedTournament;
             }
-          }
-        )
+          },
+        ),
       );
     });
 
@@ -141,7 +141,7 @@ export const AllTournamentList = () => {
                       {tournament.startDate
                         ? new Date(tournament.startDate).toLocaleDateString(
                             "en",
-                            options
+                            options,
                           )
                         : "not available"}
                     </h2>
@@ -152,7 +152,7 @@ export const AllTournamentList = () => {
                       {tournament.endDate
                         ? new Date(tournament.endDate).toLocaleDateString(
                             "en",
-                            options
+                            options,
                           )
                         : "not available"}
                     </h2>
@@ -176,7 +176,7 @@ export const AllTournamentList = () => {
                   <span>
                     {new Date(tournament.createdAt).toLocaleDateString(
                       "en",
-                      options
+                      options,
                     )}
                   </span>
                 </div>

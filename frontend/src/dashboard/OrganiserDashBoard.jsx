@@ -1,4 +1,3 @@
-import { NavLink, Outlet } from "react-router-dom";
 import { Header } from "../components/Header";
 import { MyTournamentList } from "../pages/Tournament/MyTournamentList";
 

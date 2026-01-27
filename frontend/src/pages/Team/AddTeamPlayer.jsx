@@ -1,9 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Header } from "../../components/Header";
-import {
-  useGetTeamByIdQuery,
-  useGetTeamPlayersQuery,
-} from "../../store/teamApi";
+import { useGetTeamPlayersQuery } from "../../store/teamApi";
 import { DummyListLoadingSkelton } from "../../components/modals/DummyLoadingSkelton";
 import { PlayerList } from "../../components/PlayerList";
 

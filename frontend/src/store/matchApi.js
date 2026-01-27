@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { data } from "react-router-dom";
 
 export const matchApi = createApi({
   reducerPath: "match_api",

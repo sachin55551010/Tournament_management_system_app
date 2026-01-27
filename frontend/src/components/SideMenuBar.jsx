@@ -1,6 +1,6 @@
 import { Palette, Target, Trophy, UserRound, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { setChooseTheme } from "../store/themeSlice";
 import { setIsMenuOpen } from "../store/authSlice";
 import { defaultAvatar } from "../utils/noprofilePicHelper";
@@ -15,7 +15,7 @@ export const SideMenuBar = () => {
   };
 
   const playerId = authUser?.player?._id;
-  const { data, isLoading } = useProfileQuery(playerId);
+  const { isLoading } = useProfileQuery(playerId);
 
   const closeBtn = () => {
     dispatch(setIsMenuOpen(false));

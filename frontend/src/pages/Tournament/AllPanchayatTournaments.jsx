@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { AllTournamentList } from "../../components/AllTournamentList";
-import { useGetAllTournamentsQuery } from "../../store/tournamentApi";
-import { createSocket } from "../../utils/socket";
 
 export const AllPanchayatTournaments = () => {
   return (

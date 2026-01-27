@@ -5,14 +5,11 @@ import { LoginPage } from "./pages/User/LoginPage";
 import { useSelector } from "react-redux";
 import { useCheckAuthUserQuery } from "./store/authApi";
 import { ProfilePage } from "./pages/User/ProfilePage";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { CareerStats } from "./pages/User/CareerStats";
 import { EditProfile } from "./pages/User/EditProfile";
 import { CreateTournamentPage } from "./pages/Tournament/CreateTournamentPage";
 
-import { Matches } from "./pages/Match/Matches";
-import { MyTournamentList } from "./pages/Tournament/MyTournamentList";
-import { Teams } from "./pages/Team/Teams";
 import { TournamentInfo } from "./pages/Tournament/TournamentInfo";
 import { MyTournamentInfo } from "./pages/Tournament/MyTournamentInfo";
 import { MyTournamentTeams } from "./pages/Team/MyTournamentTeams";
@@ -43,6 +40,9 @@ function App() {
   const { chooseTheme } = useSelector((state) => state.theme);
 
   const socket = createSocket();
+  socket.on("connect", () => {
+    console.log("Socket connected:", socket.id);
+  });
   const navigate = useNavigate();
   useEffect(() => {
     const redirectTo = localStorage.getItem("redirectAfterLogin");

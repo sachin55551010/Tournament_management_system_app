@@ -7,10 +7,6 @@ export const TeamList = ({ data, tournamentId }) => {
     navigate(`/my-tournament/${tournamentId}/tournament-teams/${teamId}`);
   };
 
-  const handleDeleteBtn = () => {
-    setRemoveTeams(true);
-  };
-
   const teamList = data?.myTournamentTeams;
   const teamCount = data?.countTeams;
 

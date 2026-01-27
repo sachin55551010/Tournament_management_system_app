@@ -1,7 +1,3 @@
-import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { useProfileQuery } from "../store/authApi";
-
 export const BattingStats = ({ data, isLoading }) => {
   if (isLoading) {
     return <div className="skeleton h-60 w-full"></div>;

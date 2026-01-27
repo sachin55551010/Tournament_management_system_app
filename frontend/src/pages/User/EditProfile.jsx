@@ -6,7 +6,7 @@ import { PLAYING_ROLE } from "../../constant/playingRole";
 import { BATTING_STYLE } from "../../constant/battingStyle";
 import { BOWLING_STYLE } from "../../constant/bowlingStyle";
 import { setPicturePopup } from "../../store/authSlice";
-import { useProfileQuery, useUpdateUserMutation } from "../../store/authApi";
+import { useUpdateUserMutation } from "../../store/authApi";
 import { GENDER } from "../../constant/gender";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -21,6 +21,7 @@ export const EditProfile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!authUser?.player) return;
     setPlayerInfo({
       playerName: authUser?.player?.playerName,
       gender: authUser?.player?.gender || "",
@@ -31,7 +32,7 @@ export const EditProfile = () => {
       dateOfBirth: authUser?.player?.dateOfBirth || "",
       playerId,
     });
-  }, []);
+  }, [authUser?.player, playerId]);
 
   // const profilePicture = data?.playerProfile?.profilePicture
   const [errorMessage, setErrorMessage] = useState("");
