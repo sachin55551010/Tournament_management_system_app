@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  addTeamPlayers,
   createTeam,
   getTeamById,
   deleteTeam,
@@ -17,8 +16,6 @@ export const team_route = express.Router();
 team_route.post("/create-team/:tournamentId", isAuthenticated, createTeam);
 
 team_route.get("/my-tournament-teams/:tournamentId", getTeamsByTournament);
-
-team_route.post("/add-players/:teamId", isAuthenticated, addTeamPlayers);
 
 team_route.get("/team-players/:teamId", getTeamPlayers);
 

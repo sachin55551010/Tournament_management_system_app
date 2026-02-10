@@ -172,7 +172,7 @@ export const PlayerList = ({ data, teamId }) => {
                           <img
                             src={teamPlayer?.player?.profilePicture}
                             alt="img"
-                            className="h-full w-full object-cover rounded-full"
+                            className="h-full w-full object-cover rounded-full border border-base-content/20"
                           />
                         )}
                       </div>

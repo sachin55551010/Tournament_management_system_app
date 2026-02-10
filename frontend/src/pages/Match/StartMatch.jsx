@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
 import accessDenied from "../../../assets/unautherised.svg";
 import { useState } from "react";
@@ -28,6 +28,7 @@ export const StartMatch = ({ mode }) => {
     matchScheduleDate: "",
   });
 
+  const navigate = useNavigate();
   const handleTossWinnerBtn = (teamId) => {
     setMatchData((prev) => ({ ...prev, tossWinnerTeamId: teamId }));
   };
@@ -97,21 +98,30 @@ export const StartMatch = ({ mode }) => {
       if (mode === "start") {
         if (!checkValidation()) return;
         await startMatch({ data: matchData, tournamentId }).unwrap();
-        toast.success("Match created successfully");
+        toast.success("Match created successfully", {
+          theme: "colored",
+          autoClose: 1500,
+        });
       }
       if (mode === "schedule") {
         const matchFields = Object.fromEntries(
-          Object.entries(matchData).filter(([, val]) => val !== "")
+          Object.entries(matchData).filter(([, val]) => val !== ""),
         );
 
         await scheduleMatch({ data: matchFields, tournamentId }).unwrap();
+        toast.success("Match Schedule successfully", {
+          theme: "colored",
+          autoClose: 1500,
+        });
       }
     } catch (error) {
       console.log(error);
       toast.error(error.data.message, {
-        autoClose: 3000,
+        autoClose: 1500,
         theme: "colored",
       });
+    } finally {
+      navigate(`/my-tournament/${tournamentId}/tournament-matches`);
     }
   };
 

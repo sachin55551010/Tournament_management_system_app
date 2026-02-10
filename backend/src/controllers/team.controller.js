@@ -112,18 +112,6 @@ export const getTeamsByTournament = async (req, res, next) => {
   }
 };
 
-//function to add players in a team
-export const addTeamPlayers = async (req, res, next) => {
-  try {
-    const { teamId } = req.params;
-
-    res.status(201).json({ success: true });
-  } catch (error) {
-    console.log("add team player error : ", error);
-    next(error);
-  }
-};
-
 //function to get all players from a specific team
 export const getTeamPlayers = async (req, res, next) => {
   try {
@@ -239,10 +227,10 @@ export const updateTeam = async (req, res, next) => {
       _id: { $ne: teamId },
     });
 
-    const checkDuplicatePlayerInSameTeam = await Team.findOne({
+    const checkDuplicatePlayerInSameTeam = await Team.exists({
       tournamentId,
       _id: teamId,
-      teamPlayers: { player: req.user.id },
+      "teamPlayers.player": req.user.id,
     });
 
     if (addMe && checkDuplicatePlayerInOtherTeam)

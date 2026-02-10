@@ -40,9 +40,12 @@ function App() {
   const { chooseTheme } = useSelector((state) => state.theme);
 
   const socket = createSocket();
-  socket.on("connect", () => {
-    console.log("Socket connected:", socket.id);
-  });
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Socket connected:");
+    });
+  }, [socket]);
   const navigate = useNavigate();
   useEffect(() => {
     const redirectTo = localStorage.getItem("redirectAfterLogin");

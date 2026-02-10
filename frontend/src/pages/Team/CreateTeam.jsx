@@ -25,8 +25,8 @@ export const CreateTeam = ({ mode }) => {
 
   const checkIsPlayerInTeam = Boolean(
     data?.team?.teamPlayers?.find(
-      (elem) => elem.player === authUser?.player?._id
-    )
+      (elem) => elem.player === authUser?.player?._id,
+    ),
   );
 
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ export const CreateTeam = ({ mode }) => {
       if (mode === "edit") {
         await updateTeam({ tournamentId, teamId, teamData }).unwrap();
         navigate(
-          `/my-tournament/${tournamentId}/tournament-teams/${teamId}/team-info`
+          `/my-tournament/${tournamentId}/tournament-teams/${teamId}/team-info`,
         );
       } else {
         await createTeam({ tournamentId, teamData }).unwrap();
@@ -219,7 +219,7 @@ export const CreateTeam = ({ mode }) => {
               >
                 {isUpdating ? (
                   <div className="flex gap-2">
-                    <span>Upading</span>
+                    <span>Updating</span>
                     <span className="loading loading-spinner loading-sm"></span>
                   </div>
                 ) : (
