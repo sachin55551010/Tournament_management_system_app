@@ -12,7 +12,7 @@ export const MyTournamentInfo = () => {
   //format Date
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return (
-    <div className="pt-30 max-h-dvh overflow-y-auto flex flex-col items-center p-4">
+    <div className="pt-30 min-h-dvh flex flex-col items-center p-4">
       <div className="w-full md:w-[70%] flex flex-col gap-8">
         {/* organised information  */}
         <div className="border border-base-content/20 rounded-md bg-base-100">
@@ -98,7 +98,7 @@ export const MyTournamentInfo = () => {
                       {data?.myTournament?.startDate ? (
                         <span>
                           {new Date(
-                            data?.myTournament?.startDate.slice(0, 10)
+                            data?.myTournament?.startDate.slice(0, 10),
                           ).toLocaleString("en", options)}
                         </span>
                       ) : (
@@ -114,7 +114,7 @@ export const MyTournamentInfo = () => {
                       {data?.myTournament?.endDate ? (
                         <span>
                           {new Date(
-                            data?.myTournament?.endDate.slice(0, 10)
+                            data?.myTournament?.endDate.slice(0, 10),
                           ).toLocaleString("en", options)}
                         </span>
                       ) : (

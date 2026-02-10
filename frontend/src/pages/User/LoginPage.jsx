@@ -10,7 +10,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[999] min-h-[100dvh-var(--nav-h)] w-full flex flex-col items-center p-2 bg-[url(cricket_bg_mobile.jpg)] bg-cover bg-center bg-no-repeat md:bg-[url(/cricket_bg_desktop.jpg)]">
+    <div className="fixed inset-0 z-[999] min-h-[100dvh-var(--nav-h)] w-full flex flex-col items-center p-2 bg-cover bg-center bg-no-repeat bg-[url(/cricket_bg_desktop.jpg)]">
       <form
         onSubmit={handleFormSubmit}
         className=" flex mt-2 w-full flex-col md:w-[80%] lg:w-[60%] md:mt-2 bg-base-300/40 rounded-xl backdrop-blur-sm border border-base-content/40"

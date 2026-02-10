@@ -179,7 +179,7 @@ export const PlayerList = ({ data, teamId }) => {
 
                       {/* player name and role section */}
                       <section className="flex justify-between items-center">
-                        <h1 className="font-bold">
+                        <h1 className="font-bold capitalize">
                           {teamPlayer?.player?.playerName}
                         </h1>
 

@@ -9,7 +9,7 @@ export const TeamInfoPage = () => {
 
   if (isLoading) {
     return (
-      <div className="h-dvh w-dvw flex items-center justify-center">
+      <div className="min-h-dvh w-dvw flex items-center justify-center">
         <span className="loading loading-ring w-20 h-20"></span>
       </div>
     );

@@ -120,7 +120,9 @@ export const ProfilePage = () => {
           <div className="bg-base-100 h-[60%] rounded-b-xl flex flex-col items-center">
             <div className=" mt-18 flex flex-col items-center gap-4">
               <div className="flex flex-col items-center md:absolute top-[31%] left-[28%] gap-2 lg:left-[23%]">
-                <h1 className="text-2xl font-extrabold">{playerName}</h1>
+                <h1 className="text-2xl font-extrabold capitalize">
+                  {playerName}
+                </h1>
                 <h4 className="font-semibold capitalize">
                   {playingRole || ""}
                 </h4>
