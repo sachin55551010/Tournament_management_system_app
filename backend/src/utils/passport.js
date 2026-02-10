@@ -36,6 +36,6 @@ passport.use(
         console.log("google OAuth error : ", error);
         return cb(error, null);
       }
-    }
-  )
+    },
+  ),
 );

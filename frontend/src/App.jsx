@@ -46,6 +46,7 @@ function App() {
       console.log("Socket connected:");
     });
   }, [socket]);
+
   const navigate = useNavigate();
   useEffect(() => {
     const redirectTo = localStorage.getItem("redirectAfterLogin");
@@ -62,6 +63,7 @@ function App() {
         className="h-dvh flex flex-col items-center justify-center"
       >
         <span className="loading loading-ring w-20 h-20"></span>
+        <h1 className="mt-4">Please wait app is loading...</h1>
       </div>
     );
   }

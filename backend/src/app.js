@@ -21,7 +21,7 @@ app.use(
     origin: [process.env.FRONTEND_URL],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
-  })
+  }),
 );
 
 //? express middlewares
@@ -34,7 +34,7 @@ app.get("/", (_, res) => {
 });
 
 //? routes
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("working");
 });
 app.use("/api/v1/user", user_route);

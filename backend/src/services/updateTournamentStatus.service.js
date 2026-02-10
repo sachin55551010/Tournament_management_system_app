@@ -11,7 +11,7 @@ export const updateTournamentService = async () => {
         endDate: { $gte: today },
         status: "Upcoming",
       },
-      { $set: { status: "Ongoing" } }
+      { $set: { status: "Ongoing" } },
     );
 
     //update status ongoing -> completed
@@ -20,7 +20,7 @@ export const updateTournamentService = async () => {
         status: "ongoing",
         endDate: { $gt: today },
       },
-      { $set: { status: "Completed" } }
+      { $set: { status: "Completed" } },
     );
   } catch (error) {
     console.log(error);
