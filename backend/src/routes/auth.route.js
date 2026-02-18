@@ -5,7 +5,7 @@ export const auth_router = express.Router();
 
 auth_router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
 auth_router.get(
@@ -13,5 +13,6 @@ auth_router.get(
   passport.authenticate("google", { session: false }),
   (req, res) => {
     sendCookies(req.user, res);
-  }
+    res.redirect(process.env.FRONTEND_URL);
+  },
 );

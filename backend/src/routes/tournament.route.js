@@ -20,13 +20,13 @@ tournament_route.get("/my-tournaments/:tournamentId", getTournamentInfo);
 tournament_route.patch(
   "/update-tournament/:tournamentId",
   isAuthenticated,
-  updateTournamentInfo
+  updateTournamentInfo,
 );
 
 tournament_route.delete(
   "/delete-tournament/:tournamentId",
   isAuthenticated,
-  deleteTournament
+  deleteTournament,
 );
 
 tournament_route.get("/all-tournaments/:tournamentCategory", getAllTournaments);

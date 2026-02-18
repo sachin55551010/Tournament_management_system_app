@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { getSocket } from "../utils/socket";
 import { useEffect } from "react";
 import noData from "../../assets/No data-amico.svg";
+import { useOutletContext } from "react-router-dom";
 import {
   tournamentApi,
   useGetAllTournamentsQuery,
@@ -11,11 +12,16 @@ import { DummyCardLoadingSkelton } from "./modals/DummyLoadingSkelton";
 import { Phone, User } from "lucide-react";
 
 export const AllTournamentList = () => {
+  const { searchData } = useOutletContext();
+
   const dispatch = useDispatch();
   const location = useLocation();
   const tournamentCategory = location.pathname.split("/").pop();
   const navigate = useNavigate();
-  const { data, isLoading } = useGetAllTournamentsQuery(tournamentCategory);
+  const { data, isLoading } = useGetAllTournamentsQuery({
+    tournamentCategory,
+    searchData,
+  });
 
   useEffect(() => {
     const socket = getSocket();
@@ -86,7 +92,11 @@ export const AllTournamentList = () => {
   };
   const options = { day: "2-digit", month: "short", year: "numeric" };
   if (isLoading) {
-    return <DummyCardLoadingSkelton />;
+    return (
+      <div className="mt-10">
+        <DummyCardLoadingSkelton />
+      </div>
+    );
   }
   return (
     <>
@@ -103,7 +113,7 @@ export const AllTournamentList = () => {
         <p>No Tournament found</p>
       </div>
 
-      <ul className="grid px-3 py-4 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid px-3 py-4 gap-4 mt-6 md:grid-cols-2 lg:grid-cols-3">
         {data?.allTournaments?.map((tournament) => {
           return (
             <li

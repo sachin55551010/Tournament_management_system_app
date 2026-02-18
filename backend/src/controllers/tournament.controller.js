@@ -37,7 +37,7 @@ export const addTournament = async (req, res, next) => {
     if (startDate && endDate) {
       if (startDate > endDate)
         return next(
-          new CustomErrHandler(400, "Start Date must be before end end")
+          new CustomErrHandler(400, "Start Date must be before end end"),
         );
     }
 
@@ -49,8 +49,8 @@ export const addTournament = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          `Tournament "${tournamentName}" already exists at ground "${ground} pleaase change the name of Tournament and try again"`
-        )
+          `Tournament "${tournamentName}" already exists at ground "${ground} pleaase change the name of Tournament and try again"`,
+        ),
       );
 
     const tournament = await Tournament.create({
@@ -71,7 +71,7 @@ export const addTournament = async (req, res, next) => {
       await Player.findByIdAndUpdate(
         req.user.id,
         { role: "organiser" },
-        { new: true }
+        { new: true },
       );
     }
     io.emit("newTournament", tournament);
@@ -111,7 +111,7 @@ export const getTournamentInfo = async (req, res, next) => {
       return next(new CustomErrHandler(400, "id not found"));
     const myTournament = await Tournament.findById(tournamentId).populate(
       "createdBy",
-      "playerName profilePicture number"
+      "playerName profilePicture number",
     );
     if (!myTournament)
       return next(new CustomErrHandler(400, "no tournament found"));
@@ -128,6 +128,7 @@ export const getTournamentInfo = async (req, res, next) => {
   }
 };
 
+// function to update tournament info using tournament id
 export const updateTournamentInfo = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
@@ -137,7 +138,7 @@ export const updateTournamentInfo = async (req, res, next) => {
       return next(new CustomErrHandler(404, "No tournament found!"));
     if (!updatedFields)
       return next(
-        new CustomErrHandler(404, "Please fill all the required fields!")
+        new CustomErrHandler(404, "Please fill all the required fields!"),
       );
     const tournament = await Tournament.findById(tournamentId);
 
@@ -156,13 +157,13 @@ export const updateTournamentInfo = async (req, res, next) => {
       tournament.status === "Cancelled"
     )
       return next(
-        new CustomErrHandler(403, "Sorry you cannot update this tournament")
+        new CustomErrHandler(403, "Sorry you cannot update this tournament"),
       );
 
     const updatedTournament = await Tournament.findByIdAndUpdate(
       tournamentId,
       updatedFields,
-      { new: true }
+      { new: true },
     );
 
     io.emit("updatedTournament", updatedTournament);
@@ -177,6 +178,7 @@ export const updateTournamentInfo = async (req, res, next) => {
   }
 };
 
+//  function to delete tournament using tournament id
 export const deleteTournament = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
@@ -200,8 +202,8 @@ export const deleteTournament = async (req, res, next) => {
       return next(
         new CustomErrHandler(
           400,
-          "You cannot delete ongoing or completed tournament! contact app developer for more help"
-        )
+          "You cannot delete ongoing or completed tournament! contact app developer for more help",
+        ),
       );
 
     io.emit("deleteTournament", tournamentId);
@@ -217,13 +219,39 @@ export const deleteTournament = async (req, res, next) => {
   }
 };
 
+// get all tournaments using tournament category
 export const getAllTournaments = async (req, res, next) => {
   try {
     updateTournamentService();
-    const { tournamentCategory } = req.params;
 
-    const allTournaments = await Tournament.find({ tournamentCategory });
-    return res.status(200).json({ allTournaments, success: true });
+    const { tournamentCategory } = req.params;
+    const { search, value, status } = req.query;
+
+    const filter = {
+      tournamentCategory,
+    };
+
+    const allowedFields = ["organiserName", "tournamentName", "ground", "city"];
+
+    // ✅ search filter
+    if (search && allowedFields.includes(value)) {
+      filter[value] = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    // ✅ status filter
+    if (status && status !== "") {
+      filter.status = status;
+    }
+    console.log(filter);
+
+    const allTournaments = await Tournament.find(filter).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json({ allTournaments, success: true });
   } catch (error) {
     console.log("get all tournaments error : ", error);
     next(error);

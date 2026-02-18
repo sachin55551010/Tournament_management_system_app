@@ -56,15 +56,18 @@ function App() {
       localStorage.removeItem("redirectAfterLogin");
     }
   }, [authUser, navigate]);
+
   if (isLoading && !authUser) {
     return (
-      <div
-        data-theme={myTheme}
-        className="h-dvh flex flex-col items-center justify-center"
-      >
-        <span className="loading loading-ring w-20 h-20"></span>
-        <h1 className="mt-4">Please wait app is loading...</h1>
-      </div>
+      <>
+        <div
+          data-theme={myTheme}
+          className="h-dvh flex flex-col items-center justify-center"
+        >
+          <span className="loading loading-ring w-20 h-20"></span>
+          <h1 className="mt-4">Please wait app is loading...</h1>
+        </div>
+      </>
     );
   }
 

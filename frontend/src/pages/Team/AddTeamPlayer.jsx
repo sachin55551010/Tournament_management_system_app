@@ -14,7 +14,7 @@ export const AddTeamPlayer = () => {
 
   return (
     <div className="min-h-dvh max-h-dvh overflow-y-scroll">
-      <PlayerList data={data} teamId={teamId} />
+      <PlayerList data={data} teamId={teamId} isLoading={isLoading} />
     </div>
   );
 };
