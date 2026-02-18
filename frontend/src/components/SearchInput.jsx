@@ -26,7 +26,7 @@ export const SearchInput = ({ onSearch }) => {
           onChange={(e) => setFilter({ ...filter, search: e.target.value })}
           value={filter.search}
           type="text"
-          className="border bg-base-100 mt-2 rounded-lg h-9 mb-2 outline-none pl-2 w-full"
+          className="border bg-base-100 mt-2 rounded-lg h-9 mb-2 outline-none pl-2 w-40 md:w-[80%]"
           placeholder="Search..."
         />
 
