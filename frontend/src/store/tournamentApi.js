@@ -9,12 +9,16 @@ export const tournamentApi = createApi({
   tagTypes: ["Tournament", "Auth"],
   endpoints: (builder) => ({
     getAllTournaments: builder.query({
-      query: ({ tournamentCategory, searchData }) => ({
+      query: ({ tournamentCategory, searchData, page, limit }) => ({
         url: `/all-tournaments/${tournamentCategory}`,
-        params: searchData && {
-          search: searchData.search,
-          value: searchData.value,
-          status: searchData.status,
+        params: {
+          page,
+          limit,
+          ...(searchData && {
+            search: searchData.search,
+            value: searchData.value,
+            status: searchData.status,
+          }),
         },
       }),
       providesTags: ["Tournament"],

@@ -6,10 +6,8 @@ export const AllTournaments = () => {
   const [searchData, setSearchData] = useState({
     search: "",
     value: "",
-    status,
+    status: "",
   });
-
-  console.log("All Tournament", searchData);
 
   return (
     <div className="">

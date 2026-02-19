@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 export const UserDashBoard = () => {
   return (
     <div>
-      <nav className="dock dock-sm text-[.7rem] shadow-[10px_0px_10px_rgba(0,0,0,.5)]">
+      <nav className="dock z-100 dock-sm text-[.7rem] shadow-[10px_0px_10px_rgba(0,0,0,.5)]">
         <NavLink
           to="/"
           className={({ isActive }) =>

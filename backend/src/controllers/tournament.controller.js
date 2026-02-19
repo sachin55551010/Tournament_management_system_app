@@ -245,11 +245,25 @@ export const getAllTournaments = async (req, res, next) => {
     if (status && status !== "") {
       filter.status = status;
     }
-    console.log(filter);
+
+    /**
+     * pagination logic inpliment later
+     // convert page and limit to number
+    // const pageNumber = parseInt(page);
+    // const limitNumber = parseInt(limit);
+    // const skip = (pageNumber - 1) * limitNumber;
+    // console.log(filter);
+     */
 
     const allTournaments = await Tournament.find(filter).sort({
       createdAt: -1,
     });
+
+    /**
+       const totalDocuments = await Tournament.countDocuments();
+    const hasMore = skip + allTournaments.length < totalDocuments;
+    console.log("hasMore", hasMore);
+       */
 
     res.status(200).json({ allTournaments, success: true });
   } catch (error) {

@@ -29,14 +29,19 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 //* default route
-app.get("/", (_, res) => {
-  res.send("Server working");
+app.get("/", async (_, res) => {
+  try {
+    const response = await fetch(process.env.CRICKET_NEWS_URI);
+    const data = await response.json();
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+  }
 });
+console.log(process.env.CRICKET_NEWS_URI);
 
 //? routes
-app.get("/", (_, res) => {
-  res.send("working");
-});
+
 app.use("/api/v1/user", user_route);
 app.use("/api/v1/auth", auth_router);
 app.use("/api/v1/tournament", tournament_route);

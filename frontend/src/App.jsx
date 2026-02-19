@@ -1,5 +1,6 @@
 import "./App.css";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/User/LoginPage";
 import { useSelector } from "react-redux";
@@ -9,13 +10,11 @@ import { ToastContainer } from "react-toastify";
 import { CareerStats } from "./pages/User/CareerStats";
 import { EditProfile } from "./pages/User/EditProfile";
 import { CreateTournamentPage } from "./pages/Tournament/CreateTournamentPage";
-
 import { TournamentInfo } from "./pages/Tournament/TournamentInfo";
 import { MyTournamentInfo } from "./pages/Tournament/MyTournamentInfo";
 import { MyTournamentTeams } from "./pages/Team/MyTournamentTeams";
 import { MyTournamentMatches } from "./pages/Match/MyTournamentMatches";
 import { AllTournaments } from "./pages/Tournament/AllTournaments";
-import { Allmatches } from "./pages/Match/Allmatches";
 import { AllOpenTournaments } from "./pages/Tournament/AllOpenTournaments";
 import { AllPanchayatTournaments } from "./pages/Tournament/AllPanchayatTournaments";
 import { AllPanchayatOpenTournament } from "./pages/Tournament/AllPanchayatOpenTournament";
@@ -33,6 +32,11 @@ import { useEffect } from "react";
 import { StartMatch } from "./pages/Match/StartMatch";
 import { TeamInfo } from "./pages/Team/TeamInfo";
 import { TeamInfoPage } from "./pages/Team/TeamInfoPage";
+import { AllOpenMatches } from "./pages/Match/AllOpenMatches";
+import { AllPanchayatMatches } from "./pages/Match/AllPanchayatMatches";
+import { AllPanchayatOpenMatches } from "./pages/Match/AllPanchayatOpenMatches";
+import { AllCorporateMatches } from "./pages/Match/AllCorporateMatches";
+import { AllMatches } from "./pages/Match/Allmatches";
 function App() {
   const { authUser } = useSelector((state) => state.auth);
   const { isLoading } = useCheckAuthUserQuery();
@@ -59,15 +63,92 @@ function App() {
 
   if (isLoading && !authUser) {
     return (
-      <>
-        <div
-          data-theme={myTheme}
-          className="h-dvh flex flex-col items-center justify-center"
-        >
-          <span className="loading loading-ring w-20 h-20"></span>
-          <h1 className="mt-4">Please wait app is loading...</h1>
+      <div
+        data-theme={myTheme}
+        className="h-dvh flex flex-col items-center justify-center overflow-hidden relative"
+      >
+        {/* Subtle stadium glow background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-base-content/5 to-transparent blur-3xl opacity-40" />
+
+        {/* Pitch */}
+        <div className="relative w-80 h-32 flex items-center justify-center">
+          {/* Pitch surface */}
+          <div className="absolute w-full h-full rounded-xl bg-gradient-to-r from-base-content/5 via-base-content/10 to-base-content/5" />
+
+          {/* Center pitch line */}
+          <div className="absolute h-full w-[2px] bg-base-content/30" />
+
+          {/* Crease lines */}
+          <div className="absolute top-4 w-28 h-[1px] bg-base-content/20" />
+          <div className="absolute bottom-4 w-28 h-[1px] bg-base-content/20" />
+
+          {/* Bowling arc path (subtle guide line) */}
+          <motion.div
+            className="absolute h-[2px] bg-base-content/20 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: "75%" }}
+            transition={{
+              duration: 1.4,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+
+          {/* Ball Motion */}
+          <motion.div
+            className="absolute"
+            animate={{
+              x: [-140, 140],
+              y: [0, -18, 0], // slight arc
+            }}
+            transition={{
+              duration: 1.4,
+              ease: [0.45, 0, 0.2, 1],
+              repeat: Infinity,
+            }}
+          >
+            {/* Ball */}
+            <div className="relative w-4 h-4 rounded-full bg-base-content shadow-xl">
+              {/* Ball seam */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-[2px] h-3 bg-base-100/70 rounded-full" />
+              </div>
+            </div>
+
+            {/* Motion blur trail */}
+            <motion.div
+              className="absolute top-1/2 -left-6 w-8 h-[2px] bg-base-content/20 blur-sm"
+              animate={{ opacity: [0.2, 0.6, 0.2] }}
+              transition={{
+                duration: 1.4,
+                repeat: Infinity,
+              }}
+            />
+          </motion.div>
         </div>
-      </>
+
+        {/* Premium Loading Text */}
+        <motion.div
+          className="mt-10 flex items-center gap-2 text-sm tracking-widest text-base-content/60"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{
+            duration: 1.8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          <span>App is loading please wait...</span>
+
+          {/* Animated dots */}
+          <motion.span
+            animate={{ opacity: [0, 1, 0] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          >
+            •
+          </motion.span>
+        </motion.div>
+      </div>
     );
   }
 
@@ -107,7 +188,16 @@ function App() {
             {/*
             all nested matches routes
             */}
-            <Route path="all-matches" element={<Allmatches />}></Route>
+            <Route path="all-matches" element={<AllMatches />}>
+              <Route index element={<Navigate to="open" replace />} />
+              <Route path="open" element={<AllOpenMatches />} />
+              <Route path="panchayat" element={<AllPanchayatMatches />} />
+              <Route
+                path="panchayat+open"
+                element={<AllPanchayatOpenMatches />}
+              />
+              <Route path="corporate" element={<AllCorporateMatches />} />
+            </Route>
           </Route>
 
           {/* login page  */}

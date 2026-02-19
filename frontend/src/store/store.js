@@ -6,6 +6,7 @@ import { tournamentApi } from "./tournamentApi";
 import { teamApi } from "./teamApi";
 import { inviteLinkApi } from "./inviteTeamLinkApi";
 import { matchApi } from "./matchApi";
+import { newsApi } from "./newsApi";
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -15,6 +16,7 @@ export const store = configureStore({
     [teamApi.reducerPath]: teamApi.reducer,
     [inviteLinkApi.reducerPath]: inviteLinkApi.reducer,
     [matchApi.reducerPath]: matchApi.reducer,
+    [newsApi.reducerPath]: newsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(
@@ -22,7 +24,8 @@ export const store = configureStore({
       tournamentApi.middleware,
       teamApi.middleware,
       inviteLinkApi.middleware,
-      matchApi.middleware
+      matchApi.middleware,
+      newsApi.middleware,
     );
   },
 });

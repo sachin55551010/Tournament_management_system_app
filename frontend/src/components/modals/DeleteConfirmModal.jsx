@@ -12,7 +12,7 @@ export const DeleteConfirmModal = ({
   const handleDeleteBtn = async () => {
     await deleteTournament(tournamentId).unwrap();
     setIsDeleteModal(false);
-    navigate("/my-tournament/tournaments");
+    navigate("/my-tournament");
   };
 
   return (
