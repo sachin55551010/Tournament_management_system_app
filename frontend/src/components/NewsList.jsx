@@ -1,44 +1,59 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 export const NewsList = ({ articles }) => {
-  console.log(articles);
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {articles.map((article, index) => (
-        <div
+        <motion.div
           key={index}
-          className="relative rounded-lg overflow-hidden min-h-40 flex items-end"
-          style={{
-            backgroundImage: `url(${article.urlToImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
+          whileHover={{ y: -6 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          className="group rounded-2xl overflow-hidden bg-base-100 shadow-md hover:shadow-2xl border border-base-300/40 flex flex-col"
         >
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-black/80 opacity-80"></div>
+          {/* Image (Top ~40%) */}
+          <div className="relative h-44 overflow-hidden">
+            {/* subtle gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
 
-          {/* Content */}
-          <div className="relative z-10 p-4 text-white w-full">
-            <h2 className="text-lg  font-bold mb-2 line-clamp-2">
-              {article.title}
-            </h2>
+            <img
+              src={article.urlToImage}
+              alt={article.title}
+              className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+            />
+          </div>
 
-            <p className="text-sm  mb-2 line-clamp-3">{article.description}</p>
+          {/* Content (Bottom area) */}
+          <div className="flex flex-col justify-between flex-1 p-5">
+            <div>
+              <h2 className="text-lg font-semibold leading-tight mb-3 line-clamp-2 group-hover:text-primary transition">
+                {article.title}
+              </h2>
 
+              <p className="text-sm opacity-70 line-clamp-3">
+                {article.description}
+              </p>
+            </div>
+
+            {/* CTA */}
             <a
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-300 hover:underline"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:gap-3 transition-all"
             >
               Read more
+              <span className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </a>
           </div>
-        </div>
+        </motion.div>
       ))}
+
+      {/* See All Card */}
       <Link
         to="https://www.bbc.com/sport/cricket"
-        className="min-h-40 flex items-center justify-center"
+        className="flex items-center justify-center rounded-2xl border border-dashed border-base-300 hover:border-primary transition min-h-[320px]"
       >
         <button className="px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition duration-300">
           See All Articles →
