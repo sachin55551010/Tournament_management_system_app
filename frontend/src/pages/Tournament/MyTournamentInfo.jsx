@@ -1,7 +1,19 @@
 import { useSelector } from "react-redux";
 import { NavLink, useParams } from "react-router-dom";
 import { useGetTournamentInfoQuery } from "../../store/tournamentApi";
-import { UserRoundPen } from "lucide-react";
+import {
+  UserRoundPen,
+  Shield,
+  Trophy,
+  Phone,
+  Swords,
+  Tag,
+  CalendarDays,
+  MapPin,
+  CircleDot,
+  LayoutGrid,
+  Info,
+} from "lucide-react";
 import { defaultAvatar } from "../../utils/noprofilePicHelper";
 
 export const MyTournamentInfo = () => {
@@ -12,134 +24,166 @@ export const MyTournamentInfo = () => {
   //format Date
   const options = { day: "2-digit", month: "short", year: "numeric" };
   return (
-    <div className="pt-30 min-h-dvh flex flex-col items-center p-4">
-      <div className="w-full md:w-[70%] flex flex-col gap-8">
-        {/* organised information  */}
-        <div className="border border-base-content/20 rounded-md bg-base-100">
-          <h4 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
-            Organiser Detail
-          </h4>
-          <div className="flex gap-4 py-6 px-2">
-            {/* profile picture  */}
-            <div>
+    <div className="h-dvh bg-base-200/30 pt-26 pb-8 px-4 flex flex-col items-center overflow-y-scroll">
+      <div className="w-full md:w-[65%] flex flex-col gap-6">
+        {/* Organiser Detail */}
+        <div className="rounded-2xl border border-base-content/10 bg-base-100 shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-base-content/10 bg-base-50">
+            <Shield size={14} className="text-base-content/40" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-base-content/50">
+              Organiser
+            </span>
+          </div>
+
+          <div className="flex items-center gap-5 px-5 py-6">
+            {/* Profile Picture */}
+            <div className="shrink-0">
               {data?.myTournament?.createdBy?.profilePicture === "" ? (
-                <div className="rounded-full h-18 w-18 flex items-center justify-center bg-primary">
-                  <div className="text-xl font-semibold">
+                <div className="rounded-full h-16 w-16 flex items-center justify-center bg-primary/10 ring-2 ring-primary/20">
+                  <span className="text-lg font-bold text-primary">
                     {defaultAvatar(data?.myTournament?.createdBy?.playerName)}
-                  </div>
+                  </span>
                 </div>
               ) : (
                 <img
-                  className="rounded-full h-18 w-18 object-cover"
+                  className="rounded-full h-16 w-16 object-cover ring-2 ring-base-content/10"
                   src={data?.myTournament?.createdBy?.profilePicture}
                   alt=""
                 />
               )}
             </div>
 
-            {/* organiser detials  */}
-            <div className="flex flex-col gap-2">
-              <span className="font-bold">
+            {/* Organiser Details */}
+            <div className="flex flex-col gap-3 flex-1">
+              <span className="font-bold text-base-content text-base">
                 {data?.myTournament?.createdBy?.playerName}
               </span>
-              <div className="flex gap-1 text-base-content/70 text-sm">
-                <h1>Tournament Organised :</h1>
-                <span>{data?.totalTournaments}</span>
-              </div>
-              <div className="flex gap-1 text-base-content/70 text-sm">
-                <h1>Organiser Number :</h1>
-                <span>{data?.myTournament?.createdBy?.number}</span>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-1.5 text-sm text-base-content/55">
+                  <Trophy size={13} />
+                  <span>Tournaments Organised:</span>
+                  <span className="font-semibold text-base-content/80">
+                    {data?.totalTournaments}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-base-content/55">
+                  <Phone size={13} />
+                  <span>Contact:</span>
+                  <span className="font-semibold text-base-content/80">
+                    {data?.myTournament?.createdBy?.number}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tournament details */}
+        {/* Tournament Detail */}
         {isLoading ? (
-          <div className="skeleton h-60 w-full"></div>
+          <div className="skeleton h-60 w-full rounded-2xl"></div>
         ) : (
-          <div className="flex flex-col w-full rounded-md border border-base-content/20">
-            <div className="py-2 bg-base-300 text-base-content/70 flex justify-between rounded-t-md">
-              <h4 className="pl-2 font-extrabold">Tournament Detail</h4>
-
-              {/* tournament edit button  */}
+          <div className="rounded-2xl border border-base-content/10 bg-base-100 shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-base-content/10 bg-base-50">
+              <div className="flex items-center gap-2">
+                <Swords size={14} className="text-base-content/40" />
+                <span className="text-xs font-semibold uppercase tracking-widest text-base-content/50">
+                  Tournament Detail
+                </span>
+              </div>
               {authUser?.player?._id === data?.myTournament?.createdBy?._id && (
                 <NavLink
                   to={`/update-tournament/${tournamentId}`}
-                  className="pr-3"
+                  className="flex items-center gap-1.5 text-xs text-base-content/50 hover:text-primary transition-colors duration-200"
                 >
-                  <UserRoundPen
-                    size={26}
-                    className="hover:scale-115 transition-all duration-200"
-                  />
+                  <UserRoundPen size={15} />
+                  <span>Edit</span>
                 </NavLink>
               )}
             </div>
 
-            <div className="flex flex-col p-2 gap-10 md:grid grid-cols-2">
-              <div className="flex flex-col gap-2">
-                <h4 className="text-base-content/60 font-bold">Name</h4>
-                <span className="capitalize">
+            <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  <Tag size={11} />
+                  <span>Name</span>
+                </div>
+                <span className="capitalize text-base-content font-medium">
                   {data?.myTournament?.tournamentName}
                 </span>
               </div>
 
-              {/* tournaments dates */}
-              <div className="flex flex-col gap-2">
-                <h4 className="font-bold text-base-content/60">
-                  Tournament Dates
-                </h4>
-                <div className="flex justify-between">
-                  <div className="flex gap-2 items-center">
-                    <h5 className="font-semibold text-base-content/80 text-[.85rem]">
-                      Start Date
-                    </h5>
-                    <span className="text-[.8rem]">
+              {/* Dates */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  <CalendarDays size={11} />
+                  <span>Tournament Dates</span>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-2 bg-base-200/60 rounded-lg px-3 py-1.5">
+                    <span className="text-xs text-base-content/50 font-medium">
+                      Start
+                    </span>
+                    <span className="text-sm text-base-content font-semibold">
                       {data?.myTournament?.startDate ? (
-                        <span>
-                          {new Date(
-                            data?.myTournament?.startDate.slice(0, 10),
-                          ).toLocaleString("en", options)}
-                        </span>
+                        new Date(
+                          data?.myTournament?.startDate.slice(0, 10),
+                        ).toLocaleString("en", options)
                       ) : (
-                        <span>Not Mentioned</span>
+                        <span className="text-base-content/40 font-normal">
+                          Not Mentioned
+                        </span>
                       )}
                     </span>
                   </div>
-                  <div className="flex gap-2 items-center">
-                    <h5 className="font-semibold text-base-content/80 text-[.85rem]">
-                      End Date
-                    </h5>
-                    <span className="text-[.8rem]">
+                  <div className="flex items-center gap-2 bg-base-200/60 rounded-lg px-3 py-1.5">
+                    <span className="text-xs text-base-content/50 font-medium">
+                      End
+                    </span>
+                    <span className="text-sm text-base-content font-semibold">
                       {data?.myTournament?.endDate ? (
-                        <span>
-                          {new Date(
-                            data?.myTournament?.endDate.slice(0, 10),
-                          ).toLocaleString("en", options)}
-                        </span>
+                        new Date(
+                          data?.myTournament?.endDate.slice(0, 10),
+                        ).toLocaleString("en", options)
                       ) : (
-                        <span>Not Mentioned</span>
+                        <span className="text-base-content/40 font-normal">
+                          Not Mentioned
+                        </span>
                       )}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <h1 className="text-base-content/60 font-bold">Ground</h1>
-                <span className="capitalize">
+              {/* Ground */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  <MapPin size={11} />
+                  <span>Ground</span>
+                </div>
+                <span className="capitalize text-base-content font-medium">
                   {data?.myTournament?.city}, {data?.myTournament?.ground}
                 </span>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-base-content/60 font-bold">Ball Type</h1>
-                <span className="capitalize">
+
+              {/* Ball Type */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  <CircleDot size={11} />
+                  <span>Ball Type</span>
+                </div>
+                <span className="capitalize text-base-content font-medium">
                   {data?.myTournament?.ballType}
                 </span>
               </div>
-              <div className="flex flex-col gap-2">
-                <h1 className="text-base-content/60 font-bold">Category</h1>
-                <span className="capitalize">
+
+              {/* Category */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-base-content/40">
+                  <LayoutGrid size={11} />
+                  <span>Category</span>
+                </div>
+                <span className="capitalize text-base-content font-medium">
                   {data?.myTournament?.tournamentCategory}
                 </span>
               </div>
@@ -147,21 +191,29 @@ export const MyTournamentInfo = () => {
           </div>
         )}
 
-        {/* additional Information  */}
-        <div className="flex flex-col w-full rounded-md border border-base-content/20">
-          <h1 className="pl-2 py-2 bg-base-300 rounded-t-md text-base-content/70 font-extrabold">
-            Additional Information
-          </h1>
-          {data?.myTournament?.additionalInfo === "" && (
-            <p className="capitalize p-3 text-base-content/50">
-              No information available yet. The organiser has not added details
-              for this tournament. Once updated, you will be able to view entry
-              fee, winning prize, rules, and other important information here.
-            </p>
-          )}
-          <p className="capitalize font-bold p-3 italic">
-            {data?.myTournament?.additionalInfo}
-          </p>
+        {/* Additional Information */}
+        <div className="rounded-2xl border border-base-content/10 bg-base-100 shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-base-content/10 bg-base-50">
+            <Info size={14} className="text-base-content/40" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-base-content/50">
+              Additional Information
+            </span>
+          </div>
+
+          <div className="px-5 py-6">
+            {data?.myTournament?.additionalInfo === "" ? (
+              <p className="text-sm text-base-content/40 leading-relaxed italic">
+                No information available yet. The organiser has not added
+                details for this tournament. Once updated, you will be able to
+                view entry fee, winning prize, rules, and other important
+                information here.
+              </p>
+            ) : (
+              <p className="capitalize font-semibold text-base-content/80 italic leading-relaxed">
+                {data?.myTournament?.additionalInfo}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

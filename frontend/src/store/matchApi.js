@@ -35,6 +35,14 @@ export const matchApi = createApi({
       }),
       providesTags: ["Match"],
     }),
+
+    // get all matches
+    getAllMatches: builder.query({
+      query: (tournamentCategory) => ({
+        url: `/all-matches/${tournamentCategory}`,
+      }),
+      providesTags: ["Match"],
+    }),
   }),
 });
 
@@ -42,4 +50,5 @@ export const {
   useStartMatchMutation,
   useScheduleMatchMutation,
   useGetMyTournamentTeamsQuery,
+  useGetAllMatchesQuery,
 } = matchApi;

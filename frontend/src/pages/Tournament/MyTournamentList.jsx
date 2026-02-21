@@ -24,48 +24,35 @@ export const MyTournamentList = () => {
               <p>No Tournaments found</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-10 w-full md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 w-full md:grid-cols-2 lg:grid-cols-3">
               {data?.myTournaments?.map((tournament) => {
                 return (
                   <div
                     onClick={() => handleOnClickBtn(tournament._id)}
                     key={tournament._id}
-                    className="relative flex flex-col rounded-lg h-50 bg-base-200 cursor-pointer border border-base-content/20 hover:scale-102 transition-all duration-200"
+                    className="group relative flex flex-col rounded-2xl h-50 bg-base-100 cursor-pointer border border-base-content/8 hover:border-base-content/20 hover:shadow-lg hover:shadow-base-content/5 transition-all duration-300"
                   >
                     {/* header */}
-                    <div className="h-[75%]">
-                      <h1 className="absolute font-extrabold capitalize top-30 left-1">
+                    <div className="flex-1 p-5 flex flex-col justify-end">
+                      <span className="absolute top-4 right-4 text-xs font-medium px-2.5 py-1 rounded-full bg-warning/15 text-warning border border-warning/25 tracking-wide uppercase">
+                        {tournament.status}
+                      </span>
+                      <h1 className="font-semibold text-base capitalize text-base-content leading-snug">
                         {tournament.tournamentName}
                       </h1>
-                      <div className="absolute badge badge-warning top-4 right-4 font-semibold">
-                        {tournament.status}
-                      </div>
                     </div>
 
                     {/* footer */}
-                    <div className="bg-base-300 rounded-b-lg h-[25%] p-2 text-sm">
-                      <div className="flex gap-1 text-base-content/60 font-semibold text-sm">
-                        <h1 className="">Created :</h1>
-                        <span>
-                          {new Date(tournament.createdAt).toLocaleDateString(
-                            "en",
-                            options,
-                          )}
-                        </span>
-                      </div>
-
-                      <div className="flex justify-between text-base-content/60 font-semibold">
-                        <div className="flex gap-1">
-                          <h1>City :</h1>
-                          <span className="capitalize">{tournament.city}</span>
-                        </div>
-                        <div className="flex gap-1">
-                          <h1>Ground : </h1>
-                          <span className="capitalize">
-                            {tournament.ground}
-                          </span>
-                        </div>
-                      </div>
+                    <div className="px-5 py-3 border-t border-base-content/6 flex justify-between items-center text-xs text-base-content/40 font-medium">
+                      <span className="capitalize">
+                        {tournament.city} · {tournament.ground}
+                      </span>
+                      <span>
+                        {new Date(tournament.createdAt).toLocaleDateString(
+                          "en",
+                          options,
+                        )}
+                      </span>
                     </div>
                   </div>
                 );

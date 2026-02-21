@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { CustomErrHandler } from "../utils/CustomErrHandler.js";
 import { Match } from "../models/matchSchema.js";
 import { Tournament } from "../models/tournamentSchema.js";
+import { io } from "../utils/socket.js";
 
 export const createMatch = async (req, res, next) => {
   try {
@@ -75,6 +76,8 @@ export const createMatch = async (req, res, next) => {
       decision,
       round,
     });
+
+    io.emit("newMatch", match);
 
     return res.status(201).json({ match, success: true });
   } catch (error) {
@@ -163,6 +166,90 @@ export const myTournamentMatches = async (req, res, next) => {
     return res.status(200).json({ matches, success: true });
   } catch (error) {
     console.log("get my tournament matches : ", error);
+    next(error);
+  }
+};
+
+export const getAllMatches = async (req, res, next) => {
+  try {
+    const { tournamentCategory } = req.params;
+    console.log(tournamentCategory);
+
+    const allMatches = await Match.aggregate([
+      // Join Tournament
+      {
+        $lookup: {
+          from: "tournaments", // ⚠️ collection name in MongoDB (usually lowercase plural)
+          localField: "tournamentId",
+          foreignField: "_id",
+          as: "tournamentId",
+        },
+      },
+      {
+        $unwind: "$tournamentId",
+      },
+
+      // Filter by category
+      {
+        $match: {
+          "tournamentId.tournamentCategory": tournamentCategory,
+        },
+      },
+
+      // Join First Team
+      {
+        $lookup: {
+          from: "teams",
+          localField: "firstTeamId",
+          foreignField: "_id",
+          as: "firstTeamId",
+        },
+      },
+      {
+        $unwind: "$firstTeamId",
+      },
+
+      // Join Second Team
+      {
+        $lookup: {
+          from: "teams",
+          localField: "secondTeamId",
+          foreignField: "_id",
+          as: "secondTeamId",
+        },
+      },
+      {
+        $unwind: "$secondTeamId",
+      },
+
+      // Select fields like populate(select)
+      {
+        $project: {
+          firstTeamId: {
+            teamName: 1,
+            teamLogo: 1,
+          },
+          secondTeamId: {
+            teamName: 1,
+            teamLogo: 1,
+          },
+          tournamentId: {
+            tournamentName: 1,
+            city: 1,
+            ground: 1,
+          },
+          // keep other match fields
+          matchScheduleDate: 1,
+          status: 1,
+        },
+      },
+    ]);
+    if (!allMatches) return next(new CustomErrHandler("invalid request"));
+    console.log("All Matches", allMatches);
+
+    return res.status(200).json({ allMatches });
+  } catch (error) {
+    console.log("get all matches error", error);
     next(error);
   }
 };

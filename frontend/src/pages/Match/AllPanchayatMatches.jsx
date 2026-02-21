@@ -1,3 +1,9 @@
+import { AllMatchesList } from "../../components/AllMatchesList";
+
 export const AllPanchayatMatches = () => {
-  return <div className="">AllPanchayatMatches</div>;
+  return (
+    <div className="pt-26 h-dvh">
+      <AllMatchesList />
+    </div>
+  );
 };

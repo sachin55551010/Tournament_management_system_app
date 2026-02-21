@@ -20,66 +20,71 @@ export const SearchInput = ({ onSearch }) => {
     onSearch(newFilter);
   };
   return (
-    <div className="flex items-center justify-between px-3">
-      <div className="md:w-[40%] relative">
-        <input
-          onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-          value={filter.search}
-          type="text"
-          className="border bg-base-100 mt-2 rounded-lg h-9 mb-2 outline-none pl-2 w-40 md:w-[80%]"
-          placeholder="Search..."
-        />
+    <div className="flex items-center justify-between px-4 py-2 gap-4">
+      {/* Search */}
+      <div className="flex-1 max-w-sm relative">
+        <div className="relative">
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-base-content/40 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+            />
+          </svg>
+          <input
+            onChange={(e) => setFilter({ ...filter, search: e.target.value })}
+            value={filter.search}
+            type="text"
+            className="w-full h-9 pl-9 pr-3 rounded-xl bg-base-200 border border-transparent focus:border-base-content/20 focus:bg-base-100 outline-none text-sm transition-all duration-200 placeholder:text-base-content/40"
+            placeholder="Search tournaments..."
+          />
+        </div>
 
-        {/* search section */}
+        {/* Dropdown */}
         {filter.search && (
-          <div className="bg-base-100 border p-4 rounded-md flex flex-col gap-2 w-85 md:w-[80%] absolute">
-            <button
-              className="flex gap-1 cursor-pointer"
-              onClick={() => handleSearchBtn("organiserName")}
-            >
-              <span>{filter.search} :</span>
-              <p className="badge badge-soft badge-accent">Organiser Name</p>
-            </button>
-            <button
-              className="flex gap-1 cursor-pointer"
-              onClick={() => handleSearchBtn("tournamentName")}
-            >
-              <span>{filter.search} :</span>
-              <p className="badge badge-soft badge-accent">Tournament Name</p>
-            </button>
-            <button
-              onClick={() => handleSearchBtn("ground")}
-              className="flex gap-1 cursor-pointer"
-            >
-              <span>{filter.search} :</span>
-              <p className="badge badge-soft badge-accent">Ground</p>
-            </button>
-            <button
-              onClick={() => handleSearchBtn("city")}
-              className="flex gap-1 cursor-pointer"
-            >
-              <span>{filter.search} :</span>
-              <p className="badge badge-soft badge-accent">City</p>
-            </button>
+          <div className="absolute top-[calc(100%+6px)] left-0 w-full bg-base-100 border border-base-content/10 rounded-xl shadow-lg overflow-hidden z-50">
+            {[
+              { label: "Organiser", key: "organiserName" },
+              { label: "Tournament", key: "tournamentName" },
+              { label: "Ground", key: "ground" },
+              { label: "City", key: "city" },
+            ].map(({ label, key }) => (
+              <button
+                key={key}
+                onClick={() => handleSearchBtn(key)}
+                className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-base-200 transition-colors text-left group"
+              >
+                <span className="text-base-content/50 group-hover:text-base-content/70 transition-colors truncate flex-1">
+                  {filter.search}
+                </span>
+                <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent/10 text-accent shrink-0">
+                  {label}
+                </span>
+              </button>
+            ))}
           </div>
         )}
       </div>
-      <div className="mr-2 w-50 md:w-[30%]">
-        <label htmlFor="status" className="flex items-center gap-2">
-          Status
-          <select
-            name=""
-            id="status"
-            className="select select-bordered ml-2 outline-0 rounded-lg"
-            onChange={handleOnChange}
-          >
-            <option value="">All</option>
-            <option value="Upcoming">Upcoming</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-        </label>
+
+      {/* Status Filter */}
+      <div className="shrink-0">
+        <select
+          id="status"
+          className="h-9 px-3 pr-8 rounded-xl bg-base-200 border border-transparent focus:border-base-content/20 focus:bg-base-100 outline-none text-sm transition-all duration-200 appearance-none cursor-pointer"
+          onChange={handleOnChange}
+        >
+          <option value="">All Status</option>
+          <option value="Upcoming">Upcoming</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
       </div>
     </div>
   );

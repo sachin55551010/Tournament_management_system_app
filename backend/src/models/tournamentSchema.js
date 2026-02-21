@@ -78,7 +78,7 @@ const tournamentSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Tournament = mongoose.model("Tournament", tournamentSchema);
