@@ -67,14 +67,14 @@ export const AllMatchesList = () => {
     return <DummyCardLoadingSkelton />;
   }
   return (
-    <div className="p-2 h-dvh overflow-y-scroll">
+    <div className="p-2 overflow-y-scroll">
       {noMatches && (
         <div className="h-[50%] w-auto flex flex-col items-center justify-center">
           <img src={noData} alt="No data" className="h-90 w-90 md:h-80" />
           <p>No Match found</p>
         </div>
       )}
-      <ul className="pt-4 pb-16 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <ul className="pt-4 pb-14 grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {allMatches.map((match) => (
           <div
             key={match._id}
