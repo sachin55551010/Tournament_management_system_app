@@ -131,7 +131,7 @@ export const AllTournamentList = () => {
         </div>
       )}
 
-      <ul className="grid px-3 py-4 gap-3 mt-6 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid px-3 py-4 gap-3 mt-6 md:grid-cols-2 lg:grid-cols-3 ">
         {data?.allTournaments?.map((tournament) => (
           <li
             onClick={() => handleGetTournamentInfoBtn(tournament._id)}

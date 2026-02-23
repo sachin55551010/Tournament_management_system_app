@@ -16,45 +16,20 @@ export const createMatch = async (req, res, next) => {
       round,
     } = req.body;
 
-    console.log(firstTeamId, secondTeamId);
-
     if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
-      return next(
-        new CustomErrHandler(
-          404,
-          "no tournament id found or invalid tournament id",
-        ),
-      );
-    if (!firstTeamId || !mongoose.Types.ObjectId.isValid(firstTeamId))
-      return next(
-        new CustomErrHandler(404, "no first team id found or invalid team id"),
-      );
-    if (!secondTeamId || !mongoose.Types.ObjectId.isValid(secondTeamId))
-      return next(
-        new CustomErrHandler(404, "no second team id found or invalid team id"),
-      );
-    const organiserId = await Tournament.findById(tournamentId);
+      return next(new CustomErrHandler(404, "Invalid tournament id"));
 
-    //check if logged in user id matched with tournament organiser id
-    if (!organiserId.createdBy._id.equals(req.user.id))
+    if (!firstTeamId || !mongoose.Types.ObjectId.isValid(firstTeamId))
+      return next(new CustomErrHandler(404, "Invalid first team id"));
+
+    if (!secondTeamId || !mongoose.Types.ObjectId.isValid(secondTeamId))
+      return next(new CustomErrHandler(404, "Invalid second team id"));
+
+    const tournament = await Tournament.findById(tournamentId);
+
+    if (!tournament.createdBy._id.equals(req.user.id))
       return next(new CustomErrHandler(403, "Unauthorized access"));
 
-    const checkRepeatMatch = await Match.findOne({
-      $or: [
-        { firstTeamId, secondTeamId },
-        { firstTeamId: secondTeamId, secondTeamId: firstTeamId },
-      ],
-    })
-      .populate("firstTeamId", "teamName")
-      .populate("secondTeamId", "teamName");
-
-    if (checkRepeatMatch?.round === round)
-      return next(
-        new CustomErrHandler(
-          403,
-          `A ${checkRepeatMatch.round} match between ${checkRepeatMatch.firstTeamId.teamName} and ${checkRepeatMatch.secondTeamId.teamName} already played. Please choose a different round or schedule another match.`,
-        ),
-      );
     if (
       !firstTeamId?.trim() ||
       !secondTeamId?.trim() ||
@@ -67,7 +42,9 @@ export const createMatch = async (req, res, next) => {
 
     if (firstTeamId === secondTeamId)
       return next(new CustomErrHandler(400, "Both teams cannot be same"));
-    const match = await Match.create({
+
+    // ✅ Create match
+    const createdMatch = await Match.create({
       tournamentId,
       firstTeamId,
       secondTeamId,
@@ -77,11 +54,43 @@ export const createMatch = async (req, res, next) => {
       round,
     });
 
-    io.emit("newMatch", match);
+    // ✅ Populate required UI fields
+    const populatedMatch = await Match.findById(createdMatch._id)
+      .populate("firstTeamId", "teamName teamLogo")
+      .populate("secondTeamId", "teamName teamLogo")
+      .populate("tournamentId", "tournamentName ground city matchScheduleDate");
 
-    return res.status(201).json({ match, success: true });
+    // ✅ Transform data for frontend
+    const formattedMatch = {
+      _id: populatedMatch._id,
+      firstTeamId: {
+        teamName: populatedMatch.firstTeamId.teamName,
+        teamLogo: populatedMatch.firstTeamId.teamLogo,
+      },
+      secondTeamId: {
+        teamName: populatedMatch.secondTeamId.teamName,
+        teamLogo: populatedMatch.secondTeamId.teamLogo,
+      },
+      tournamentId: {
+        tournamentName: populatedMatch.tournamentId.tournamentName,
+        ground: populatedMatch.tournamentId.ground,
+        city: populatedMatch.tournamentId.city,
+      },
+      matchScheduleDate: populatedMatch.tournamentId.matchScheduleDate,
+      status: populatedMatch.status,
+      overs: populatedMatch.overs,
+      round: populatedMatch.round,
+    };
+
+    // ✅ Emit populated data
+    io.emit("newMatch", formattedMatch);
+
+    return res.status(201).json({
+      success: true,
+      match: formattedMatch,
+    });
   } catch (error) {
-    console.log("Create match error : ", error);
+    console.log("Create match error:", error);
     next(error);
   }
 };
@@ -156,47 +165,28 @@ export const scheduleMatch = async (req, res, next) => {
 export const myTournamentMatches = async (req, res, next) => {
   try {
     const { tournamentId } = req.params;
-    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId))
+
+    if (!tournamentId || !mongoose.Types.ObjectId.isValid(tournamentId)) {
       return next(new CustomErrHandler(400, "No Tournament found"));
-    const matches = await Match.find({ tournamentId })
-      .populate("firstTeamId", "teamName city teamLogo")
-      .populate("secondTeamId", "teamName city teamLogo")
-      .populate("tournamentId", "ground city");
+    }
 
-    return res.status(200).json({ matches, success: true });
-  } catch (error) {
-    console.log("get my tournament matches : ", error);
-    next(error);
-  }
-};
+    const matches = await Match.aggregate([
+      {
+        $match: {
+          tournamentId: new mongoose.Types.ObjectId(tournamentId),
+        },
+      },
 
-export const getAllMatches = async (req, res, next) => {
-  try {
-    const { tournamentCategory } = req.params;
-    console.log(tournamentCategory);
-
-    const allMatches = await Match.aggregate([
-      // Join Tournament
       {
         $lookup: {
-          from: "tournaments", // ⚠️ collection name in MongoDB (usually lowercase plural)
+          from: "tournaments",
           localField: "tournamentId",
           foreignField: "_id",
           as: "tournamentId",
         },
       },
-      {
-        $unwind: "$tournamentId",
-      },
+      { $unwind: "$tournamentId" },
 
-      // Filter by category
-      {
-        $match: {
-          "tournamentId.tournamentCategory": tournamentCategory,
-        },
-      },
-
-      // Join First Team
       {
         $lookup: {
           from: "teams",
@@ -205,11 +195,8 @@ export const getAllMatches = async (req, res, next) => {
           as: "firstTeamId",
         },
       },
-      {
-        $unwind: "$firstTeamId",
-      },
+      { $unwind: "$firstTeamId" },
 
-      // Join Second Team
       {
         $lookup: {
           from: "teams",
@@ -218,34 +205,109 @@ export const getAllMatches = async (req, res, next) => {
           as: "secondTeamId",
         },
       },
-      {
-        $unwind: "$secondTeamId",
-      },
+      { $unwind: "$secondTeamId" },
 
-      // Select fields like populate(select)
+      { $sort: { createdAt: -1 } },
+
       {
         $project: {
+          _id: 1,
+          status: 1,
+          round: 1,
+          overs: 1,
+          matchScheduleDate: 1,
+
           firstTeamId: {
-            teamName: 1,
-            teamLogo: 1,
+            teamName: "$firstTeamId.teamName",
+            teamLogo: "$firstTeamId.teamLogo",
           },
           secondTeamId: {
-            teamName: 1,
-            teamLogo: 1,
+            teamName: "$secondTeamId.teamName",
+            teamLogo: "$secondTeamId.teamLogo",
           },
           tournamentId: {
-            tournamentName: 1,
-            city: 1,
-            ground: 1,
+            tournamentName: "$tournamentId.tournamentName",
+            city: "$tournamentId.city",
+            ground: "$tournamentId.ground",
           },
-          // keep other match fields
-          matchScheduleDate: 1,
-          status: 1,
         },
       },
     ]);
-    if (!allMatches) return next(new CustomErrHandler("invalid request"));
-    console.log("All Matches", allMatches);
+
+    return res.status(200).json({ matches, success: true });
+  } catch (error) {
+    console.log("get my tournament matches error:", error);
+    next(error);
+  }
+};
+
+export const getAllMatches = async (req, res, next) => {
+  try {
+    const { tournamentCategory } = req.params;
+
+    const allMatches = await Match.aggregate([
+      {
+        $lookup: {
+          from: "tournaments",
+          localField: "tournamentId",
+          foreignField: "_id",
+          as: "tournamentId",
+        },
+      },
+      { $unwind: "$tournamentId" },
+
+      {
+        $match: {
+          "tournamentId.tournamentCategory": tournamentCategory,
+        },
+      },
+
+      {
+        $lookup: {
+          from: "teams",
+          localField: "firstTeamId",
+          foreignField: "_id",
+          as: "firstTeamId",
+        },
+      },
+      { $unwind: "$firstTeamId" },
+
+      {
+        $lookup: {
+          from: "teams",
+          localField: "secondTeamId",
+          foreignField: "_id",
+          as: "secondTeamId",
+        },
+      },
+      { $unwind: "$secondTeamId" },
+
+      { $sort: { createdAt: -1 } },
+
+      {
+        $project: {
+          _id: 1,
+          status: 1,
+          round: 1,
+          overs: 1,
+          matchScheduleDate: 1,
+
+          firstTeamId: {
+            teamName: "$firstTeamId.teamName",
+            teamLogo: "$firstTeamId.teamLogo",
+          },
+          secondTeamId: {
+            teamName: "$secondTeamId.teamName",
+            teamLogo: "$secondTeamId.teamLogo",
+          },
+          tournamentId: {
+            tournamentName: "$tournamentId.tournamentName",
+            city: "$tournamentId.city",
+            ground: "$tournamentId.ground",
+          },
+        },
+      },
+    ]);
 
     return res.status(200).json({ allMatches });
   } catch (error) {

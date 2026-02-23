@@ -13,6 +13,8 @@ export const AllMatchesList = () => {
   const { data, isLoading } = useGetAllMatchesQuery(tournamentCategory);
 
   const allMatches = data?.allMatches ?? [];
+  console.log(allMatches);
+
   const dispatch = useDispatch();
   // Dynamic badge color
   const getStatusStyle = (status) => {
@@ -29,6 +31,7 @@ export const AllMatchesList = () => {
         return "badge-ghost";
     }
   };
+
   useEffect(() => {
     const socket = getSocket();
 
@@ -64,7 +67,7 @@ export const AllMatchesList = () => {
     return <DummyCardLoadingSkelton />;
   }
   return (
-    <div className="p-2">
+    <div className="p-2 h-dvh overflow-y-scroll">
       {noMatches && (
         <div className="h-[50%] w-auto flex flex-col items-center justify-center">
           <img src={noData} alt="No data" className="h-90 w-90 md:h-80" />
@@ -160,16 +163,34 @@ export const AllMatchesList = () => {
               </div>
             </div>
 
-            {/* Footer — Date */}
-            <div className="px-5 py-3 bg-base-200/50 flex items-center gap-1.5 text-xs text-base-content/50">
-              <Calendar size={12} />
-              <span>
-                {new Date(match.matchScheduleDate).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </span>
+            {/* Footer — Date, Round & Overs */}
+            <div className="px-5 py-3 bg-base-200/50 flex items-center justify-between gap-2 text-xs text-base-content/50">
+              <div className="flex items-center gap-1.5">
+                <Calendar size={12} />
+                <span>
+                  {new Date(match.matchScheduleDate).toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    },
+                  )}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {match.round && (
+                  <span className="badge badge-soft badge-info text-[.8rem]">
+                    {match.round}
+                  </span>
+                )}
+                {match.overs && (
+                  <span className="badge badge-soft badge-info text-[.8rem]">
+                    Overs : {match.overs}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         ))}
